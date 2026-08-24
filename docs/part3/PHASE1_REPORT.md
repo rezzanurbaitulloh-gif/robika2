@@ -11,7 +11,7 @@
 - Props: pine tree 64px, signpost 48px.
 - All loads go through `public/assets/manifest.json` (data-driven, no hard-coded paths in scenes).
 
-**Gameplay (deployed at https://robika.vercel.app/game):**
+**Gameplay (deployed at https://robika2.vercel.app/game):**
 - `HubScene`: ASCII-defined Boot Valley (30×20, `content/worlds/boot_valley.json`) → tile ground + static collision bodies + y-sorted tree depth.
 - `Player`: WASD/arrows + touch D-pad, 4-dir walk animations with idle fallback, camera follow with smooth lerp + responsive zoom.
 - `InteractionSystem`: nearest-in-radius prompt chip ([E] Bicara / Periksa), tap support.
