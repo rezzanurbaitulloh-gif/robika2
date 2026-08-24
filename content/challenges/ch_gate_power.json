@@ -1,0 +1,19 @@
+{
+  "id": "ch_gate_power",
+  "title": "Nyalakan Gerbang Jembatan",
+  "language": "javascript",
+  "function_name": "nyalakanGerbang",
+  "story": "Gerbang jembatan mati total. Ia butuh TIGA denyut energi agar menyala kembali.",
+  "starter": "// Gerbang butuh TIGA denyut energi untuk menyala.\n// Gunakan loop for untuk memanggil bridge.pulse() sebanyak tiga kali.\n// bridge.pulse(\"gate_bridge\") mengirim satu denyut ke gerbang.\n\nfunction nyalakanGerbang(bridge) {\n  // tulis kodemu di sini\n\n}",
+  "tests": [
+    { "name": "gerbang menerima tepat 3 denyut", "expectPulses": 3 },
+    { "name": "semua denyut menuju gerbang_bridge", "expectTarget": "gate_bridge" }
+  ],
+  "hints": [
+    "Loop for memiliki bentuk: for (let i = 0; i < 3; i++) { /* diulang 3 kali */ }",
+    "Di dalam kurung kurawal loop, panggil bridge.pulse(\"gate_bridge\");",
+    "Perhatikan: kondisi i < 3 membuat badan loop berjalan persis 3 kali — pas untuk 3 denyut."
+  ],
+  "sandbox": { "timeout_ms": 5000, "max_logs": 60 },
+  "on_success": { "verb": "pulse", "target": "gate_bridge", "flag": "gate_opened" }
+}

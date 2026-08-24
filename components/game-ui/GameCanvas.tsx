@@ -5,6 +5,8 @@ import type { Game } from "phaser";
 import { Hud, TouchControls } from "@/components/game-ui/Hud";
 import { DialogueBox } from "@/components/game-ui/DialogueBox";
 import { PromptChip } from "@/components/game-ui/PromptChip";
+import { CodeTerminal } from "@/components/game-ui/CodeTerminal";
+import { Toast } from "@/components/game-ui/Toast";
 
 export function GameCanvas() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -68,6 +70,8 @@ export function GameCanvas() {
           <Hud />
           <PromptChip />
           <DialogueBox />
+          <CodeTerminal />
+          <Toast />
           <TouchControls />
         </>
       )}

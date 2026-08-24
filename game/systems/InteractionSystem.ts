@@ -10,6 +10,7 @@ export interface Interactable {
   lines: Array<{ speaker: string; text: string }>;
   resolveLines?: () => Array<{ speaker: string; text: string }>;
   onDialogueEnd?: () => void;
+  onInteract?: () => void;
 }
 
 export class InteractionSystem {
@@ -54,6 +55,11 @@ export class InteractionSystem {
     }
     if (!this.nearest) return;
     const it = this.nearest;
+    if (it.onInteract) {
+      EventBus.emit("ui:prompt", null);
+      it.onInteract();
+      return;
+    }
     const lines = it.resolveLines ? it.resolveLines() : it.lines;
     if (lines.length) {
       EventBus.emit("ui:prompt", null);

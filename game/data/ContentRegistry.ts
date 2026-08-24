@@ -1,5 +1,7 @@
 import bootValley from "@/content/worlds/boot_valley.json";
 import miraDialogue from "@/content/dialogue/mira.json";
+import chGatePower from "@/content/challenges/ch_gate_power.json";
+import type { ChallengeDef } from "@/lib/coding/ChallengeRunner";
 
 export interface WorldDef {
   id: string;
@@ -14,6 +16,7 @@ export interface WorldDef {
     kind: string;
     radius_tiles: number;
     lines?: Array<{ speaker: string; text: string }>;
+    challenge_ref?: string;
   }>;
 }
 
@@ -25,3 +28,4 @@ export interface DialogueDef {
 
 export const worlds: Record<string, WorldDef> = { boot_valley: bootValley as WorldDef };
 export const dialogues: Record<string, DialogueDef> = { npc_engineer_mira: miraDialogue as DialogueDef };
+export const challenges: Record<string, ChallengeDef> = { ch_gate_power: chGatePower as unknown as ChallengeDef };

@@ -23,6 +23,12 @@
     },
     "prop_sign": {
       "url": "/assets/props/sign.png"
+    },
+    "prop_terminal": {
+      "url": "/assets/props/terminal.png"
+    },
+    "prop_gate": {
+      "url": "/assets/props/gate.png"
     }
   },
   "spritesheets": {

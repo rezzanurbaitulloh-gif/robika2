@@ -1,0 +1,58 @@
+export interface BridgeEffect {
+  verb: string;
+  args: unknown[];
+}
+
+export interface RunResult {
+  status: "success" | "error" | "timeout";
+  logs: string[];
+  effects: BridgeEffect[];
+  error?: string;
+  failedTest?: string;
+}
+
+export const SANDBOX_SOURCE = String.raw`
+self.onmessage = function (e) {
+  var data = e.data || {};
+  var logs = [];
+  var effects = [];
+  var maxLogs = data.maxLogs || 60;
+
+  var bridge = new Proxy({}, {
+    get: function (target, prop) {
+      return function () {
+        var args = Array.prototype.slice.call(arguments);
+        if (effects.length < 200) effects.push({ verb: String(prop), args: args });
+        return undefined;
+      };
+    }
+  });
+
+  var fakeConsole = {
+    log: function () {
+      if (logs.length < maxLogs) {
+        logs.push(Array.prototype.slice.call(arguments).map(String).join(" "));
+      }
+    }
+  };
+
+  try {
+    var factory = new Function(
+      "bridge",
+      "console",
+      '"use strict";\n' + data.code + "\n;return typeof " + data.fnName + " !== 'undefined' ? " + data.fnName + " : null;"
+    );
+    var fn = factory(bridge, fakeConsole);
+    if (typeof fn !== "function") {
+      throw new Error("Fungsi " + data.fnName + " tidak ditemukan. Pastikan namanya persis seperti instruksi.");
+    }
+    fn(bridge);
+    self.postMessage({ status: "success", logs: logs, effects: effects });
+  } catch (err) {
+    var msg = err && err.message ? err.message : String(err);
+    var line = err && err.stack ? (err.stack.match(/<anonymous>:(\d+)/) || [])[1] : null;
+    if (line) msg += " (sekitar baris " + (line - 1) + " kode kamu)";
+    self.postMessage({ status: "error", logs: logs, effects: effects, error: msg });
+  }
+};
+`;

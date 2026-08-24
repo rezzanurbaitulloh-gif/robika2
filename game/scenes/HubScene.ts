@@ -7,6 +7,8 @@ import { DialogueRunner } from "@/game/dialogue/DialogueRunner";
 import { InteractionSystem, type Interactable } from "@/game/systems/InteractionSystem";
 import { SaveSystem } from "@/game/systems/SaveSystem";
 import { touch } from "@/lib/game/touchInput";
+import type { ChallengeDef } from "@/lib/coding/ChallengeRunner";
+import chGatePower from "@/content/challenges/ch_gate_power.json";
 
 interface HubData {
   worldId: string;
@@ -23,6 +25,10 @@ export class HubScene extends Phaser.Scene {
   private keyE!: Phaser.Input.Keyboard.Key;
   private tileIdx = { grass: 0, grass_alt: 0, path: 1 };
   private worldId = "boot_valley";
+  private gateRect?: Phaser.GameObjects.Rectangle;
+  private gateImage?: Phaser.GameObjects.Image;
+  private challengeRegistry: Record<string, ChallengeDef> = {};
+  private terminalOpen = false;
 
   constructor() {
     super("HubScene");
@@ -39,6 +45,14 @@ export class HubScene extends Phaser.Scene {
     this.interactions = new InteractionSystem(this, this.runner);
     this.cursors = this.input.keyboard!.createCursorKeys();
     this.keyE = this.input.keyboard!.addKey("E");
+    this.challengeRegistry = { ch_gate_power: chGatePower as ChallengeDef };
+    EventBus.on("world:effect", (p) => this.onWorldEffect(p));
+    EventBus.on("ui:terminal:open", () => {
+      this.terminalOpen = true;
+    });
+    EventBus.on("ui:terminal:closed", () => {
+      this.terminalOpen = false;
+    });
     this.input.on(Phaser.Input.Events.POINTER_UP, () => {
       if (this.runner?.isActive) EventBus.emit("input:interact");
     });
@@ -87,6 +101,16 @@ export class HubScene extends Phaser.Scene {
         }
 
         if (!world.solid.includes(kind)) continue;
+
+        if (kind === "gate" && this.textures.exists("prop_gate")) {
+          this.gateImage = this.add
+            .image(px, py + 12, "prop_gate")
+            .setOrigin(0.5, 1)
+            .setDepth(py + 16);
+          this.gateRect = this.add.rectangle(px, py - 4, TS - 6, 20) as Phaser.GameObjects.Rectangle;
+          solids.add(this.gateRect);
+          continue;
+        }
 
         if (kind === "tree" && this.textures.exists("prop_tree")) {
           this.add.image(px, py + 8, "prop_tree").setOrigin(0.5, 1).setDepth(py + 16);
@@ -142,6 +166,29 @@ export class HubScene extends Phaser.Scene {
       });
     }
 
+    // ---- Code terminal ----
+    const termSpawn = world.spawns["gate_bridge"];
+    const termDef = world.interactables.find((i) => i.id === "terminal_gate");
+    if (termSpawn && termDef && this.textures.exists("prop_terminal")) {
+      const kx = termSpawn.x * TS + TS / 2;
+      const ky = (termSpawn.y - 2) * TS + TS / 2;
+      this.add.image(kx, ky + 10, "prop_terminal").setOrigin(0.5, 1).setDepth(ky).setName("terminal_gate");
+      this.interactions.register({
+        id: "terminal_gate",
+        kind: "terminal",
+        x: kx,
+        y: ky,
+        radius: (termDef.radius_tiles ?? 1.5) * TS,
+        lines: [],
+        onInteract: () => {
+          const cid = termDef.challenge_ref ?? "ch_gate_power";
+          if (this.challengeRegistry[cid]) {
+            EventBus.emit("ui:terminal:open", { challengeId: cid });
+          }
+        },
+      });
+    }
+
     // ---- Player ----
     this.player = new Player(this, -999, -999);
     this.physics.add.collider(this.player, solids);
@@ -170,6 +217,36 @@ export class HubScene extends Phaser.Scene {
     return this.tileIdx.path;
   }
 
+  private onWorldEffect(payload: unknown) {
+    const { verb, target } = payload as { verb: string; target: string };
+    if (verb !== "pulse" || target !== "gate_bridge") return;
+    if (!this.gateImage || this.flags["gate_opened"] === true) return;
+
+    this.tweens.add({
+      targets: this.gateImage,
+      alpha: { from: 1, to: 0.25 },
+      duration: 160,
+      yoyo: true,
+      repeat: 2,
+      onComplete: () => this.openGate(),
+    });
+  }
+
+  private openGate() {
+    if (this.flags["gate_opened"] === true) return;
+    this.flags["gate_opened"] = true;
+    if (this.gateRect) {
+      const body = this.gateRect.body as Phaser.Physics.Arcade.StaticBody | null;
+      if (body) body.enable = false;
+      this.gateRect.setVisible(false);
+    }
+    if (this.gateImage) {
+      this.tweens.add({ targets: this.gateImage, alpha: 0.2, scale: 0.92, duration: 500 });
+    }
+    EventBus.emit("ui:toast", { text: "Gerbang jembatan MENYALA! Kode kamu bekerja." });
+    this.persistSave();
+  }
+
   private async spawnFromSave(world: (typeof worlds)[string], TS: number) {
     const save = await this.saves.load();
     const sp = world.spawns["player_default"] ?? { x: 5, y: 5 };
@@ -177,6 +254,14 @@ export class HubScene extends Phaser.Scene {
     const py = (save?.position?.y as number) ?? sp.y * TS + TS / 2;
     this.flags = (save?.state as Record<string, unknown>) ?? {};
     this.player.setPosition(px, py);
+    if (this.flags["gate_opened"] === true) {
+      if (this.gateRect) {
+        const body = this.gateRect.body as Phaser.Physics.Arcade.StaticBody | null;
+        if (body) body.enable = false;
+        this.gateRect.setVisible(false);
+      }
+      this.gateImage?.setAlpha(0.2);
+    }
     this.persistSave();
   }
 
@@ -188,7 +273,7 @@ export class HubScene extends Phaser.Scene {
   update() {
     if (!this.player || !this.cursors || this.player.x < 0) return;
 
-    const locked = this.runner.isActive;
+    const locked = this.runner.isActive || this.terminalOpen;
     if (!locked) {
       let dx = touch.dx;
       let dy = touch.dy;

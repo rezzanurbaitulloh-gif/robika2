@@ -7,20 +7,23 @@
     ",": "grass_alt",
     "#": "path",
     "T": "tree",
-    "~": "water"
+    "~": "water",
+    "G": "gate",
+    "K": "terminal"
   },
   "solid": [
     "tree",
-    "water"
+    "water",
+    "gate"
   ],
   "rows": [
     "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT",
     "T............................T",
     "T..TT....,,,,,,,,,,,,....TT..T",
     "T..TT..,,,,,,,,,,,,,,..TTTT..T",
-    "T......,,,,,,,,,,,,,,......,.T",
+    "T......,,K,,,,,,,,,,,......,.T",
     "T.....,,,,,,,,,,,,,,,,...,,..T",
-    "T..,,,######,,,,,,,,,,,...,..T",
+    "T..,,,###G##,,,,,,,,,,,...,..T",
     "T..,,##....###,,,,,,,,,......T",
     "T..,,#......##,,,,,,,....TT..T",
     "T..,,##....###,,,,,,,........T",
@@ -47,6 +50,10 @@
     "sign_post": {
       "x": 17,
       "y": 11
+    },
+    "gate_bridge": {
+      "x": 9,
+      "y": 6
     }
   },
   "interactables": [
@@ -65,6 +72,12 @@
           "text": "\u00ab Lembah Boot \u2014 tempat semua petualangan kode dimulai. \u00bb"
         }
       ]
+    },
+    {
+      "id": "terminal_gate",
+      "kind": "terminal",
+      "radius_tiles": 1.5,
+      "challenge_ref": "ch_gate_power"
     }
   ]
 }
