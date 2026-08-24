@@ -9,8 +9,16 @@
     ],
     "repeat": [
       { "speaker": "Mira", "text": "Terminal Kode menunggumu di utara. Ingat: kode adalah kekuatanmu di sini." }
+    ],
+    "turn_in": [
+      { "speaker": "Mira", "text": "Aku melihat cahayanya dari sini! Gerbang menyala... kau berhasil!" },
+      { "speaker": "Mira", "text": "Kau baru saja mengubah dunia dengan kode sendiri. Itu kekuatan nyata, tahu?" },
+      { "speaker": "Mira", "text": "Terima kasih! Ini hadiah pertamamu — investasi untuk petualanganmu." }
+    ],
+    "after_done": [
+      { "speaker": "Mira", "text": "Lembah Boot aman untuk sekarang. Petualanganmu baru dimulai!" },
+      { "speaker": "Mira", "text": "Sebentar lagi ada terowongan baru di utara — ku dengar ada mesin aneh di sana…" }
     ]
   },
-  "default_tree": "first_meeting",
-  "on_complete_flag": "met_mira"
+  "default_tree": "first_meeting"
 }

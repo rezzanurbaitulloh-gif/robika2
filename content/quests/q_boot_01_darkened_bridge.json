@@ -1,0 +1,27 @@
+{
+  "id": "q_boot_01_darkened_bridge",
+  "title": "Jembatan yang Gelap",
+  "giver": "npc_engineer_mira",
+  "summary": "Gerbang jembatan mati sejak badai glitch. Mira membutuhkan bantuanmu menyalakannya lewat Terminal Kode.",
+  "objectives": [
+    {
+      "id": "obj_talk_mira",
+      "type": "talk_to",
+      "target": "npc_engineer_mira",
+      "text": "Bicara dengan Mira si insinyur"
+    },
+    {
+      "id": "obj_power_gate",
+      "type": "coding_challenge",
+      "target": "ch_gate_power",
+      "text": "Nyalakan gerbang lewat Terminal Kode (loop 3 denyut)"
+    },
+    {
+      "id": "obj_return",
+      "type": "turn_in",
+      "target": "npc_engineer_mira",
+      "text": "Kembali ke Mira untuk melapor"
+    }
+  ],
+  "rewards": { "xp": 60, "credits": 25 }
+}

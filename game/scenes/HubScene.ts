@@ -8,6 +8,8 @@ import { InteractionSystem, type Interactable } from "@/game/systems/Interaction
 import { SaveSystem } from "@/game/systems/SaveSystem";
 import { touch } from "@/lib/game/touchInput";
 import type { ChallengeDef } from "@/lib/coding/ChallengeRunner";
+import { QuestEngine } from "@/game/quests/QuestEngine";
+import { quests } from "@/game/data/ContentRegistry";
 import chGatePower from "@/content/challenges/ch_gate_power.json";
 
 interface HubData {
@@ -29,6 +31,7 @@ export class HubScene extends Phaser.Scene {
   private gateImage?: Phaser.GameObjects.Image;
   private challengeRegistry: Record<string, ChallengeDef> = {};
   private terminalOpen = false;
+  private questEngine?: QuestEngine;
 
   constructor() {
     super("HubScene");
@@ -137,12 +140,13 @@ export class HubScene extends Phaser.Scene {
         lines: [],
         resolveLines: () => {
           if (!dlg) return [];
-          const treeName =
-            this.flags["met_mira"] === true ? "repeat" : dlg.default_tree;
-          return dlg.trees[treeName] ?? [];
+          const tree = this.questEngine?.miraTree() ?? dlg.default_tree;
+          return dlg.trees[tree] ?? dlg.trees[dlg.default_tree] ?? [];
         },
         onDialogueEnd: () => {
-          this.flags["met_mira"] = true;
+          const tree = this.questEngine?.miraTree() ?? "first_meeting";
+          this.questEngine?.onDialogueEnd(tree);
+          if (this.flags["met_mira"] !== true) this.flags["met_mira"] = true;
           this.persistSave();
         },
       };
@@ -252,7 +256,14 @@ export class HubScene extends Phaser.Scene {
     const sp = world.spawns["player_default"] ?? { x: 5, y: 5 };
     const px = (save?.position?.x as number) ?? sp.x * TS + TS / 2;
     const py = (save?.position?.y as number) ?? sp.y * TS + TS / 2;
-    this.flags = (save?.state as Record<string, unknown>) ?? {};
+    const loaded = (save?.state as Record<string, unknown>) ?? {};
+    Object.keys(this.flags).forEach((k) => delete this.flags[k]);
+    Object.assign(this.flags, loaded);
+    const qdef = quests["q_boot_01_darkened_bridge"];
+    if (qdef) {
+      this.questEngine = new QuestEngine(qdef, this.flags, () => this.persistSave());
+      EventBus.emit("quest:updated", this.questEngine.view());
+    }
     this.player.setPosition(px, py);
     if (this.flags["gate_opened"] === true) {
       if (this.gateRect) {

@@ -7,6 +7,7 @@ import { DialogueBox } from "@/components/game-ui/DialogueBox";
 import { PromptChip } from "@/components/game-ui/PromptChip";
 import { CodeTerminal } from "@/components/game-ui/CodeTerminal";
 import { Toast } from "@/components/game-ui/Toast";
+import { QuestTracker, WalletChip } from "@/components/game-ui/QuestTracker";
 
 export function GameCanvas() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -68,6 +69,8 @@ export function GameCanvas() {
       {status === "ready" && (
         <>
           <Hud />
+          <QuestTracker />
+          <WalletChip />
           <PromptChip />
           <DialogueBox />
           <CodeTerminal />
