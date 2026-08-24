@@ -1,0 +1,16 @@
+{
+  "npc_id": "npc_engineer_mira",
+  "trees": {
+    "first_meeting": [
+      { "speaker": "Mira", "text": "Oh! Pengunjung baru di Lembah Boot! Namaku Mira, insinyur jembatan." },
+      { "speaker": "Mira", "text": "Gerbang jembatan di seberang mati total sejak badai glitch kemarin." },
+      { "speaker": "Mira", "text": "Aku sudah menyiapkan Terminal Kode di dekat gerbang. Coba pelajari dulu dasar-dasarnya, ya!" },
+      { "speaker": "Mira", "text": "Nanti kita buat dunia ini merespons kode-MU. Sampai jumpa di gerbang!" }
+    ],
+    "repeat": [
+      { "speaker": "Mira", "text": "Terminal Kode menunggumu di utara. Ingat: kode adalah kekuatanmu di sini." }
+    ]
+  },
+  "default_tree": "first_meeting",
+  "on_complete_flag": "met_mira"
+}

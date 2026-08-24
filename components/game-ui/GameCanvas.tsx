@@ -2,6 +2,9 @@
 
 import { useEffect, useRef, useState } from "react";
 import type { Game } from "phaser";
+import { Hud, TouchControls } from "@/components/game-ui/Hud";
+import { DialogueBox } from "@/components/game-ui/DialogueBox";
+import { PromptChip } from "@/components/game-ui/PromptChip";
 
 export function GameCanvas() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -45,19 +48,29 @@ export function GameCanvas() {
   }, []);
 
   return (
-    <main className="min-h-screen bg-[#0d1b1e] flex items-center justify-center p-4">
-      {status === "loading" && (
-        <p className="text-emerald-300 font-mono animate-pulse">Memuat dunia…</p>
+    <main className="relative min-h-screen overflow-hidden bg-[#0d1b1e]">
+      <div className="absolute inset-0 flex items-center justify-center p-2">
+        {status === "loading" && (
+          <p className="animate-pulse font-mono text-emerald-300">Memuat dunia…</p>
+        )}
+        {status === "error" && (
+          <p className="font-mono text-red-400">
+            Gagal memuat engine.{" "}
+            <button className="underline" onClick={() => location.reload()}>
+              Coba lagi
+            </button>
+          </p>
+        )}
+        <div ref={containerRef} className="h-full w-full" />
+      </div>
+      {status === "ready" && (
+        <>
+          <Hud />
+          <PromptChip />
+          <DialogueBox />
+          <TouchControls />
+        </>
       )}
-      {status === "error" && (
-        <p className="text-red-400 font-mono">
-          Gagal memuat engine.{" "}
-          <button className="underline" onClick={() => location.reload()}>
-            Coba lagi
-          </button>
-        </p>
-      )}
-      <div ref={containerRef} className="w-full max-w-5xl aspect-video" />
     </main>
   );
 }

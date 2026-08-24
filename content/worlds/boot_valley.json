@@ -1,0 +1,70 @@
+{
+  "id": "boot_valley",
+  "name_key": "worlds.boot_valley.name",
+  "tile_size": 32,
+  "legend": {
+    ".": "grass",
+    ",": "grass_alt",
+    "#": "path",
+    "T": "tree",
+    "~": "water"
+  },
+  "solid": [
+    "tree",
+    "water"
+  ],
+  "rows": [
+    "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT",
+    "T............................T",
+    "T..TT....,,,,,,,,,,,,....TT..T",
+    "T..TT..,,,,,,,,,,,,,,..TTTT..T",
+    "T......,,,,,,,,,,,,,,......,.T",
+    "T.....,,,,,,,,,,,,,,,,...,,..T",
+    "T..,,,######,,,,,,,,,,,...,..T",
+    "T..,,##....###,,,,,,,,,......T",
+    "T..,,#......##,,,,,,,....TT..T",
+    "T..,,##....###,,,,,,,........T",
+    "T...,,,######,,,,,,,,...TTT..T",
+    "T....,,,,,,,,,,,,,,,.........T",
+    "T..TT.,,,,,,,,,,,,,,.......,.T",
+    "T..TT..,,,,,,,,,,,.......,...T",
+    "T......................,.....T",
+    "T....TT..........TT..........T",
+    "T............................T",
+    "T............................T",
+    "T............................T",
+    "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT"
+  ],
+  "spawns": {
+    "player_default": {
+      "x": 15,
+      "y": 16
+    },
+    "npc_engineer_mira": {
+      "x": 12,
+      "y": 7
+    },
+    "sign_post": {
+      "x": 17,
+      "y": 11
+    }
+  },
+  "interactables": [
+    {
+      "id": "npc_engineer_mira",
+      "kind": "npc",
+      "radius_tiles": 1.6
+    },
+    {
+      "id": "sign_post",
+      "kind": "sign",
+      "radius_tiles": 1.4,
+      "lines": [
+        {
+          "speaker": "sign",
+          "text": "\u00ab Lembah Boot \u2014 tempat semua petualangan kode dimulai. \u00bb"
+        }
+      ]
+    }
+  ]
+}

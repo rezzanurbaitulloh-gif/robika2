@@ -1,0 +1,67 @@
+{
+  "images": {
+    "tiles_boot_valley": {
+      "url": "/assets/tiles/boot_valley_atlas.png"
+    },
+    "player_south": {
+      "url": "/assets/characters/player_south.png"
+    },
+    "player_east": {
+      "url": "/assets/characters/player_east.png"
+    },
+    "player_north": {
+      "url": "/assets/characters/player_north.png"
+    },
+    "player_west": {
+      "url": "/assets/characters/player_west.png"
+    },
+    "npc_mira_south": {
+      "url": "/assets/characters/npc_mira_south.png"
+    },
+    "prop_tree": {
+      "url": "/assets/props/tree.png"
+    },
+    "prop_sign": {
+      "url": "/assets/props/sign.png"
+    }
+  },
+  "spritesheets": {
+    "player_walk_south": {
+      "url": "/assets/characters/player_walk_south.png",
+      "frameWidth": 48,
+      "frameHeight": 48,
+      "frames": 6,
+      "fps": 8,
+      "repeat": -1
+    },
+    "player_walk_north": {
+      "url": "/assets/characters/player_walk_north.png",
+      "frameWidth": 48,
+      "frameHeight": 48,
+      "frames": 6,
+      "fps": 8,
+      "repeat": -1
+    },
+    "player_walk_west": {
+      "url": "/assets/characters/player_walk_west.png",
+      "frameWidth": 48,
+      "frameHeight": 48,
+      "frames": 6,
+      "fps": 8,
+      "repeat": -1
+    },
+    "player_walk_east": {
+      "url": "/assets/characters/player_walk_east.png",
+      "frameWidth": 48,
+      "frameHeight": 48,
+      "frames": 6,
+      "fps": 8,
+      "repeat": -1
+    }
+  },
+  "tiles": {
+    "grass": 0,
+    "grass_alt": 0,
+    "path": 1
+  }
+}
