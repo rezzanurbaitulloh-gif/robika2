@@ -7,6 +7,7 @@ import { DialogueBox } from "@/components/game-ui/DialogueBox";
 import { PromptChip } from "@/components/game-ui/PromptChip";
 import { CodeTerminal } from "@/components/game-ui/CodeTerminal";
 import { Toast } from "@/components/game-ui/Toast";
+import { QuestPopup } from "@/components/game-ui/QuestPopup";
 import { QuestTracker, WalletChip } from "@/components/game-ui/QuestTracker";
 import { StoryIntro } from "@/components/game-ui/StoryIntro";
 import { SettingsOverlay, RotatePrompt } from "@/components/game-ui/SettingsOverlay";
@@ -99,6 +100,7 @@ export function GameCanvas() {
           <DialogueBox />
           <CodeTerminal />
           <Toast />
+          <QuestPopup />
           <TouchControls />
           <StoryIntro />
           <SettingsOverlay />

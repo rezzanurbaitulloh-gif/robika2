@@ -168,5 +168,11 @@
     }
   ],
   "title_key": "course.js_dasar.title",
-  "description_key": "course.js_dasar.desc"
+  "description_key": "course.js_dasar.desc",
+  "support": {
+    "content": true,
+    "editor": true,
+    "execution": true,
+    "offline": false
+  }
 }

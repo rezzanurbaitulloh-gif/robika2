@@ -4,10 +4,13 @@ import { useEffect, useState } from "react";
 import { EventBus } from "@/game/EventBus";
 import { touch } from "@/lib/game/touchInput";
 import { InboxDrawer } from "@/components/game-ui/InboxDrawer";
+import { t } from "@/lib/i18n";
 
 export function Hud() {
   const [saved, setSaved] = useState(false);
   const [hp, setHp] = useState({ hp: 50, max: 50 });
+  const [energy, setEnergy] = useState({ energy: 100, max: 100 });
+  const [gems, setGems] = useState(0);
 
   useEffect(() => {
     let t: ReturnType<typeof setTimeout>;
@@ -19,9 +22,17 @@ export function Hud() {
     const offHp = EventBus.on("ui:hp", (p) =>
       setHp(p as { hp: number; max: number })
     );
+    const offEn = EventBus.on("ui:energy", (p) =>
+      setEnergy(p as { energy: number; max: number })
+    );
+    const offWallet = EventBus.on("wallet:data", (p) =>
+      setGems((p as { gems?: number }).gems ?? 0)
+    );
     return () => {
       off();
       offHp();
+      offEn();
+      offWallet();
       clearTimeout(t);
     };
   }, []);
@@ -34,18 +45,29 @@ export function Hud() {
         </div>
         <InboxDrawer />
       </div>
-      <div className="rounded bg-black/60 px-2 py-1 font-mono text-[11px]">
-        <div className="flex items-center gap-1">
-          <span className="text-red-400">HP</span>
-          <div className="h-2 w-20 overflow-hidden rounded bg-black/70 ring-1 ring-red-900">
-            <div
-              className="h-full bg-red-500 transition-all"
-              style={{ width: `${(hp.hp / hp.max) * 100}%` }}
-            />
+      <div className="space-y-1">
+        <div className="rounded bg-black/60 px-2 py-1 font-mono text-[11px]">
+          <div className="flex items-center gap-1">
+            <span className="text-red-400">HP</span>
+            <div className="h-2 w-20 overflow-hidden rounded bg-black/70 ring-1 ring-red-900">
+              <div
+                className="h-full bg-red-500 transition-all"
+                style={{ width: `${(hp.hp / hp.max) * 100}%` }}
+              />
+            </div>
+            <span className="text-red-300">
+              {hp.hp}/{hp.max}
+            </span>
           </div>
-          <span className="text-red-300">
-            {hp.hp}/{hp.max}
-          </span>
+          <div className="mt-1 flex items-center gap-1">
+            <span className="text-teal-300">{t("hud.energy")}</span>
+            <div className="h-1.5 w-20 overflow-hidden rounded bg-black/70 ring-1 ring-teal-900">
+              <div
+                className="h-full bg-teal-400 transition-all"
+                style={{ width: `${(energy.energy / energy.max) * 100}%` }}
+              />
+            </div>
+          </div>
         </div>
       </div>
       <div
@@ -102,6 +124,15 @@ export function TouchControls() {
         <span />
       </div>
       <div className="flex items-center gap-3">
+        <button
+          className="h-12 w-12 rounded-full bg-teal-900/80 font-mono text-xs font-bold text-teal-100 ring-2 ring-teal-500 active:bg-teal-600 md:hidden"
+          onClick={() => {
+            touch.reset();
+            EventBus.emit("input:dodge");
+          }}
+        >
+          »»
+        </button>
         <button
           className="h-16 w-16 rounded-full bg-red-900/80 font-mono text-sm font-bold text-red-100 ring-2 ring-red-500 active:bg-red-600 md:hidden"
           onClick={() => {

@@ -110,5 +110,18 @@
   "relic.secret.text": "Pusaka tersembunyi! +25 Credits!",
   "menu.codelab.locked": "CodeLab — temukan Terminal Kode untuk membuka",
   "toast.shrine": "HP pulih & progres tersimpan di altar!",
-  "toast.relic": "Pusaka rahasia ditemukan! +25 Credits"
+  "toast.relic": "Pusaka rahasia ditemukan! +25 Credits",
+  "popup.questComplete": "QUEST SELESAI",
+  "popup.continue": "LANJUTKAN",
+  "dialogue.choice.hint": "Pilih:",
+  "hud.energy": "EN",
+  "dialogue.skip": "Lewati »",
+  "mira.choice.1": "Siap! Aku akan menyalakannya.",
+  "mira.choice.2": "Aku butuh persiapan dulu…",
+  "mira.choice2.reply": "Tentu! Kumpulkan dirimu dulu — Terminal Kode tidak akan ke mana-mana.",
+  "support.content": "Materi",
+  "support.editor": "Editor",
+  "support.execution": "Eksekusi",
+  "support.offline": "Offline",
+  "door.academy.enter": "Terminal Akademi. [E] Belajar"
 }

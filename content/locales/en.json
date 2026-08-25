@@ -110,5 +110,18 @@
   "relic.secret.text": "A hidden relic! +25 Credits!",
   "menu.codelab.locked": "CodeLab — find a Code Terminal to unlock",
   "toast.shrine": "HP restored & progress saved at the altar!",
-  "toast.relic": "Secret relic found! +25 Credits"
+  "toast.relic": "Secret relic found! +25 Credits",
+  "popup.questComplete": "QUEST COMPLETE",
+  "popup.continue": "CONTINUE",
+  "dialogue.choice.hint": "Choose:",
+  "hud.energy": "EN",
+  "dialogue.skip": "Skip »",
+  "mira.choice.1": "Ready! I'll power it up.",
+  "mira.choice.2": "I need to prepare first…",
+  "mira.choice2.reply": "Of course! Take your time — the Code Terminal isn't going anywhere.",
+  "support.content": "Content",
+  "support.editor": "Editor",
+  "support.execution": "Execution",
+  "support.offline": "Offline",
+  "door.academy.enter": "Academy Terminal. [E] Study"
 }

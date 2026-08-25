@@ -119,8 +119,10 @@ export class QuestEngine {
       this.flags[QUEST_FLAG] = "done";
       this.onFlagsDirty();
       EventBus.emit("quest:updated", this.view());
-      EventBus.emit("ui:toast", {
-        text: t("quest.done", { xp: res.rewards?.xp_granted ?? 0, credits: res.rewards?.credits ?? 0 }),
+      EventBus.emit("quest:rewardPopup", {
+        title: t(this.def.title_key),
+        xp: res.rewards?.xp_granted ?? 0,
+        credits: res.rewards?.credits ?? 0,
       });
       EventBus.emit("ui:levelup", {});
       void import("@/lib/analytics").then((m) => m.track("quest_completed", { quest: this.def.id }));

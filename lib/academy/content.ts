@@ -36,6 +36,7 @@ export interface CourseDef {
   title_key: string;
   language: string;
   description_key: string;
+  support?: { content?: boolean; editor?: boolean; execution?: boolean; offline?: boolean };
   chapters: ChapterDef[];
 }
 

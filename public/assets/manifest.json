@@ -62,6 +62,15 @@
     },
     "prop_shrine": {
       "url": "/assets/props/prop_shrine.png"
+    },
+    "portrait_mira": {
+      "url": "/assets/portraits/portrait_mira.png"
+    },
+    "portrait_dengklek": {
+      "url": "/assets/portraits/portrait_dengklek.png"
+    },
+    "portrait_lulu": {
+      "url": "/assets/portraits/portrait_lulu.png"
     }
   },
   "spritesheets": {

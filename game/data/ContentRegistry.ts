@@ -39,6 +39,7 @@ export interface WorldDef {
     props_at?: { x: number; y: number };
     credits?: number;
     idem?: string;
+    target_url?: string;
   }>;
 }
 

@@ -77,6 +77,7 @@ export function WalletChip() {
         }
         usePlayerState.getState().setWallet({ ...w.data, ...c.data });
         setWallet({ ...w.data, ...c.data });
+        EventBus.emit("wallet:data", { ...w.data, level: c.data.level, xp: c.data.xp });
       }
     } catch {}
   }, []);

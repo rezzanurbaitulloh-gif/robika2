@@ -9,6 +9,7 @@ export interface Interactable {
   radius: number;
   lines: Array<{ speaker: string; text: string }>;
   resolveLines?: () => Array<{ speaker: string; text: string }>;
+  resolveConfig?: () => import("@/game/dialogue/DialogueRunner").DialogueConfig | null;
   onDialogueEnd?: () => void;
   onInteract?: () => void;
 }
@@ -60,10 +61,12 @@ export class InteractionSystem {
       it.onInteract();
       return;
     }
-    const lines = it.resolveLines ? it.resolveLines() : it.lines;
+    const config = it.resolveConfig?.() ?? null;
+    const lines = config?.lines ?? (it.resolveLines ? it.resolveLines() : it.lines);
     if (lines.length) {
       EventBus.emit("ui:prompt", null);
-      this.runner.start(lines, it.onDialogueEnd);
+      if (config) this.runner.startConfig(config, it.onDialogueEnd);
+      else this.runner.start(lines, it.onDialogueEnd);
     }
   }
 }
@@ -72,4 +75,5 @@ interface DialogueRunnerRef {
   isActive: boolean;
   advance(): boolean;
   start(lines: Array<{ speaker: string; text: string }>, onEnd?: () => void): void;
+  startConfig(config: import("@/game/dialogue/DialogueRunner").DialogueConfig, onEnd?: () => void): void;
 }

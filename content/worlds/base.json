@@ -16,7 +16,7 @@
   "rows": [
     "XXXXXXXXXXXXXX",
     "XXXXXX.SXXXXXX",
-    "XX..........XX",
+    "XX...T.....XXX",
     "XX..........XX",
     "XX..........XX",
     "XX..........XX",
@@ -35,7 +35,15 @@
       "y": 7
     }
   },
-  "props": [],
+  "props": [
+    {
+      "id": "academy_terminal",
+      "ref": "prop_terminal",
+      "x": 5,
+      "y": 2,
+      "solid": true
+    }
+  ],
   "interactables": [
     {
       "id": "shrine_base",
@@ -55,6 +63,15 @@
       },
       "lines_keys": [
         "door.hub.enter"
+      ]
+    },
+    {
+      "id": "academy_portal",
+      "kind": "portal",
+      "radius_tiles": 1.6,
+      "target_url": "/academy",
+      "lines_keys": [
+        "door.academy.enter"
       ]
     }
   ]

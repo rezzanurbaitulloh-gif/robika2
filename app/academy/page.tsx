@@ -35,6 +35,18 @@ export default function AcademyPage() {
                 </p>
                 <h2 className="mt-1 text-xl font-bold text-emerald-300">{t("course.js_dasar.title")}</h2>
                 <p className="mt-1 text-xs text-emerald-400/80">{t("course.js_dasar.desc")}</p>
+                <div className="mt-2 flex flex-wrap gap-1">
+                  {Object.entries(course?.support ?? {}).map(([k, v]) => (
+                    <span
+                      key={k}
+                      className={`rounded px-1.5 py-0.5 text-[10px] ${
+                        v ? "bg-emerald-900 text-emerald-300" : "bg-black/40 text-emerald-700"
+                      }`}
+                    >
+                      {v ? "✓" : "✗"} {t(`support.${k}`)}
+                    </span>
+                  ))}
+                </div>
               </div>
               <span className="rounded bg-emerald-900 px-3 py-1 text-xs text-emerald-300">
                 3 Bab

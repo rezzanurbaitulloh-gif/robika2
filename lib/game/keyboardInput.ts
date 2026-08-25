@@ -42,6 +42,10 @@ export function attachKeyboardInput(): void {
       EventBus.emit("input:attack");
       return;
     }
+    if (e.code === "ShiftLeft" || e.code === "ShiftRight") {
+      EventBus.emit("input:dodge");
+      return;
+    }
     if (e.code === "KeyE") {
       EventBus.emit("input:interact");
       return;

@@ -14,9 +14,34 @@ export class BootScene extends Scene {
     const { width, height } = this.scale;
     this.cameras.main.setBackgroundColor("#0d1b1e");
 
+    // S56 — loading in-world: mascot pixel + judul region
+    const mascotX = width / 2;
+    const mascotY = height / 2 + 46;
+    const body = this.add.rectangle(mascotX, mascotY, 10, 14, 0x2f8f4a);
+    const head = this.add.rectangle(mascotX, mascotY - 11, 9, 8, 0x34d399);
+    const hood = this.add.rectangle(mascotX, mascotY - 15, 11, 4, 0x1f7a55);
+    const legL = this.add.rectangle(mascotX - 3, mascotY + 9, 3, 5, 0x5a3a2a);
+    const legR = this.add.rectangle(mascotX + 3, mascotY + 9, 3, 5, 0x5a3a2a);
+    this.tweens.add({
+      targets: [legL, legR],
+      scaleX: { from: 1, to: 0.4 },
+      duration: 260,
+      yoyo: true,
+      repeat: -1,
+      onYoyo: (tw) => { void tw; },
+    });
+    void body; void head; void hood;
+
     const barW = width * 0.6;
     const bar = this.add.rectangle(width / 2, height / 2, 2, 8, 0x34d399).setOrigin(0.5);
     this.add.rectangle(width / 2, height / 2, barW, 10, 0x12262b).setOrigin(0.5);
+    this.add
+      .text(width / 2, height / 2 - 52, t("world.boot_valley.name"), {
+        fontFamily: "monospace",
+        fontSize: "18px",
+        color: "#34d399",
+      })
+      .setOrigin(0.5);
     this.add
       .text(width / 2, height / 2 - 28, t("loading.world"), {
         fontFamily: "monospace",

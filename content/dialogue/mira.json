@@ -21,5 +21,25 @@
       "mira.done.2"
     ]
   },
-  "default_tree": "first_meeting"
+  "default_tree": "first_meeting",
+  "portrait": "portrait_mira",
+  "choices": {
+    "first_meeting": {
+      "after_index": 3,
+      "prompt_key": "dialogue.choice.hint",
+      "options": [
+        {
+          "text_key": "mira.choice.1",
+          "set_flag": "ready_for_gate"
+        },
+        {
+          "text_key": "mira.choice.2",
+          "set_flag": "not_ready",
+          "extra_lines": [
+            "mira.choice2.reply"
+          ]
+        }
+      ]
+    }
+  }
 }
