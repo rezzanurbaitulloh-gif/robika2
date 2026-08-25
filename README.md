@@ -26,6 +26,7 @@ npm run dev                  # http://localhost:3000
 - [x] Phase 1 — Playable game core (player, map, camera, NPC, dialogue, interaction)
 - [x] Phase 2 — Coding (Monaco, sandbox, bridge, challenges)
 - [x] Phase 3 — Quest (objectives, quest state, rewards)
-- [ ] Phase 4 — Combat (enemies, attack, damage, boss)
+- [x] Phase 4 — Combat (enemies, attack, damage, boss)
+- [ ] Phase 5 — Academy (lessons, exercises, challenges, mastery)
 
 Payments and gacha ship behind feature flags (`lib/config/flags.ts`) until verified.
