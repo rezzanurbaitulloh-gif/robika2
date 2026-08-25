@@ -19,24 +19,31 @@ export function GameCanvas() {
 
     (async () => {
       try {
-        const [{ AUTO, Scale, Game }, { BootScene }] = await Promise.all([
+        const [{ AUTO, Scale, Game }, { BootScene }, { HubScene }] = await Promise.all([
           import("phaser"),
           import("@/game/scenes/BootScene"),
+          import("@/game/scenes/HubScene"),
         ]);
         if (cancelled || !containerRef.current) return;
 
+        const forceCanvas = new URLSearchParams(window.location.search).get("renderer") === "canvas";
         gameRef.current = new Game({
-          type: AUTO,
+          type: forceCanvas ? 0 : AUTO,
           parent: containerRef.current,
           pixelArt: true,
+          physics: {
+            default: "arcade",
+            arcade: { gravity: { x: 0, y: 0 }, debug: false },
+          },
           scale: {
             mode: Scale.FIT,
             autoCenter: Scale.CENTER_BOTH,
             width: 960,
             height: 540,
           },
-          scene: [BootScene],
+          scene: [BootScene, HubScene],
         });
+        (window as unknown as { __ROBIKA_GAME?: Game }).__ROBIKA_GAME = gameRef.current;
         setStatus("ready");
       } catch {
         if (!cancelled) setStatus("error");

@@ -1,4 +1,4 @@
-import Phaser from "phaser";
+import * as Phaser from "phaser";
 import { EventBus } from "@/game/EventBus";
 import { worlds, dialogues } from "@/game/data/ContentRegistry";
 import type { AssetManifest } from "@/game/data/assetTypes";
