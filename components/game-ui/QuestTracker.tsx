@@ -73,6 +73,7 @@ export function WalletChip() {
           EventBus.emit("ui:levelup", {});
           EventBus.emit("ui:toast", { text: `⭐ Lv ${c.data.level}!` });
           void import("@/lib/analytics").then((m) => m.track("level_up", { level: c.data.level }));
+          void import("@/lib/notify").then((m) => m.mirrorNotification("level_up", { level: c.data.level }));
         }
         usePlayerState.getState().setWallet({ ...w.data, ...c.data });
         setWallet({ ...w.data, ...c.data });

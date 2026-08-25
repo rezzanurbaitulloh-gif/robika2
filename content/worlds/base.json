@@ -1,0 +1,61 @@
+{
+  "id": "base",
+  "name_key": "world.base.name",
+  "atlas": "tiles_dungeon",
+  "tile_size": 32,
+  "legend": {
+    ".": "stone",
+    "X": "void",
+    "S": "shrine",
+    "B": "door_hub"
+  },
+  "solid": [
+    "void",
+    "shrine"
+  ],
+  "rows": [
+    "XXXXXXXXXXXXXX",
+    "XXXXXX.SXXXXXX",
+    "XX..........XX",
+    "XX..........XX",
+    "XX..........XX",
+    "XX..........XX",
+    "XX..........XX",
+    "XX..........XX",
+    "XXXXXX.BXXXXXX",
+    "XXXXXXXXXXXXXX"
+  ],
+  "spawns": {
+    "player_default": {
+      "x": 6,
+      "y": 7
+    },
+    "from_hub": {
+      "x": 6,
+      "y": 7
+    }
+  },
+  "props": [],
+  "interactables": [
+    {
+      "id": "shrine_base",
+      "kind": "shrine",
+      "radius_tiles": 1.6,
+      "lines_keys": [
+        "shrine.base.text"
+      ]
+    },
+    {
+      "id": "door_hub",
+      "kind": "door",
+      "radius_tiles": 1.4,
+      "target": {
+        "world": "boot_valley",
+        "spawn": "from_base"
+      },
+      "lines_keys": [
+        "door.hub.enter"
+      ]
+    }
+  ]
+}

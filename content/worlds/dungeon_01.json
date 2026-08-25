@@ -1,0 +1,85 @@
+{
+  "id": "dungeon_01",
+  "name_key": "world.dungeon.name",
+  "atlas": "tiles_dungeon",
+  "tile_size": 32,
+  "legend": {
+    ".": "stone",
+    ",": "stone_alt",
+    "X": "void",
+    "B": "door_hub",
+    "C": "core"
+  },
+  "solid": [
+    "void",
+    "core"
+  ],
+  "rows": [
+    "XXXXXXXXXXXXXXXXXX",
+    "XXXXXXXX.CXXXXXXXX",
+    "XX......,....,...X",
+    "XX...............X",
+    "XX....,...,,,,...X",
+    "XX...............X",
+    "XX...,............",
+    "XX.......B........",
+    "XX................",
+    "XXXXXX.BXXXXXXXXXX",
+    "XXXXXXXXXXXXXXXXXX"
+  ],
+  "spawns": {
+    "player_default": {
+      "x": 8,
+      "y": 8
+    },
+    "from_hub": {
+      "x": 8,
+      "y": 8
+    }
+  },
+  "props": [
+    {
+      "id": "core_glitch",
+      "ref": "prop_gate",
+      "x": 9,
+      "y": 1,
+      "solid": true
+    }
+  ],
+  "enemy_spawns": [
+    {
+      "def": "enemy_glitch_scout",
+      "x": 5,
+      "y": 4
+    },
+    {
+      "def": "enemy_glitch_scout",
+      "x": 12,
+      "y": 5
+    },
+    {
+      "def": "enemy_glitch_scout",
+      "x": 9,
+      "y": 3
+    },
+    {
+      "def": "enemy_glitch_warden",
+      "x": 9,
+      "y": 2
+    }
+  ],
+  "interactables": [
+    {
+      "id": "door_hub",
+      "kind": "door",
+      "radius_tiles": 1.4,
+      "target": {
+        "world": "boot_valley",
+        "spawn": "from_dungeon"
+      },
+      "lines_keys": [
+        "door.hub.enter"
+      ]
+    }
+  ]
+}

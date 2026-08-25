@@ -1,0 +1,15 @@
+{
+  "npc_id": "npc_pak_dengklek",
+  "speaker": "Pak Dengklek",
+  "trees": {
+    "first_meeting": [
+      "dengklek.first.1",
+      "dengklek.first.2",
+      "dengklek.first.3"
+    ],
+    "repeat": [
+      "dengklek.repeat.1"
+    ]
+  },
+  "default_tree": "first_meeting"
+}

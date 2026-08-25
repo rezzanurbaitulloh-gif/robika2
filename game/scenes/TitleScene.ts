@@ -6,7 +6,7 @@ import { audio } from "@/game/audio/AudioSystem";
 /** §68 — Title/lobi: Lanjutkan / Petualangan Baru / Akademi / Pengaturan. */
 export class TitleScene extends Scene {
   private hasSave = false;
-  private items: Array<{ key: string; action: () => void }> = [];
+  private items: Array<{ key: string; action: () => void; locked?: boolean }> = [];
   private selected = 0;
   private labels: Phaser.GameObjects.Text[] = [];
 
@@ -36,12 +36,7 @@ export class TitleScene extends Scene {
       })
       .setOrigin(0.5);
 
-    this.items = [
-      { key: this.hasSave ? "title.continue" : "title.play", action: () => this.startGame() },
-      { key: "title.academy", action: () => this.openPage("/academy") },
-      { key: "title.settings", action: () => this.openSettings() },
-    ];
-    this.renderMenu(width, height);
+    void this.buildMenu(width, height);
 
     EventBus.on("input:confirm", this.boundConfirm);
     EventBus.on("input:menu:up", this.boundUp);
@@ -82,6 +77,39 @@ export class TitleScene extends Scene {
     EventBus.emit("game.booted", { scene: "TitleScene" });
   }
 
+  private async buildMenu(width: number, height: number) {
+    // item default sinkron — menu selalu bisa diaktifkan sejak frame pertama
+    this.items = [
+      { key: this.hasSave ? "title.continue" : "title.play", action: () => this.startGame() },
+      { key: "title.academy", action: () => this.openPage("/academy") },
+      { key: "menu.codelab.locked", action: () => {}, locked: true },
+      { key: "title.settings", action: () => this.openSettings() },
+    ];
+    this.renderMenu(width, height);
+
+    // §menu kontekstual: item terkunci muncul sebagai progresi, bukan dashboard
+    let flags: Record<string, unknown> = {};
+    try {
+      const { createClient } = await import("@/lib/supabase/client");
+      const supabase = createClient();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (user) {
+        const { data } = await supabase.from("saves").select("state").eq("user_id", user.id).limit(1);
+        flags = ((data?.[0] as { state?: Record<string, unknown> })?.state) ?? {};
+      }
+    } catch {}
+
+    this.items = [
+      { key: this.hasSave ? "title.continue" : "title.play", action: () => this.startGame() },
+      { key: "title.academy", action: () => this.openPage("/academy") },
+      { key: "menu.codelab.locked", action: () => {}, locked: !flags["terminal_used"] },
+      { key: "title.settings", action: () => this.openSettings() },
+    ];
+    this.renderMenu(width, height);
+  }
+
   private boundConfirm = () => this.activate();
   private boundUp = () => this.move(-1);
   private boundDown = () => this.move(1);
@@ -89,14 +117,16 @@ export class TitleScene extends Scene {
   private renderMenu(width: number, height: number) {
     this.labels.forEach((l) => l.destroy());
     this.labels = this.items.map((item, i) => {
+      const locked = item.locked === true;
+      const prefix = locked ? "🔒 " : i === this.selected ? "▸ " : "";
+      const suffix = locked ? "" : i === this.selected ? " ◂" : "";
       const label = this.add
-        .text(width / 2, height * 0.52 + i * 44, t(item.key), {
+        .text(width / 2, height * 0.52 + i * 44, prefix + t(item.key) + suffix, {
           fontFamily: "monospace",
           fontSize: "18px",
-          color: i === this.selected ? "#34d399" : "#6ee7b7",
+          color: locked ? "#3f5f56" : i === this.selected ? "#34d399" : "#6ee7b7",
         })
         .setOrigin(0.5);
-      if (i === this.selected) label.setText(`▸ ${t(item.key)} ◂`);
       return label;
     });
   }
@@ -115,8 +145,13 @@ export class TitleScene extends Scene {
   }
 
   private activate() {
+    const item = this.items[this.selected];
+    if (!item || item.locked) {
+      audio.play("ui.click");
+      return;
+    }
     audio.play("ui.click");
-    this.items[this.selected]?.action();
+    item.action();
   }
 
   private startGame() {

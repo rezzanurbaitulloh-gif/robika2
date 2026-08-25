@@ -95,6 +95,7 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
   hurt(dmg: number, fromX: number): boolean {
     if (this.mode === "dead") return false;
     this.hp -= dmg;
+    EventBus.emit("combat:damage", { x: this.x, y: this.y, amount: dmg });
     this.hurtUntil = this.scene.time.now + 120;
     this.setTint(0xff8888);
     const body = this.body as Phaser.Physics.Arcade.Body;

@@ -12,6 +12,7 @@ export interface ChallengeTest {
 export interface ChallengeDef {
   id: string;
   title: string;
+  min_bridge_version?: number;
   language: string;
   function_name: string;
   story: string;

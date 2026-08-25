@@ -1,6 +1,7 @@
 {
   "id": "boot_valley",
-  "name_key": "worlds.boot_valley.name",
+  "name_key": "world.boot_valley.name",
+  "atlas": "tiles_boot_valley",
   "tile_size": 32,
   "legend": {
     ".": "grass",
@@ -8,8 +9,10 @@
     "#": "path",
     "T": "tree",
     "~": "water",
+    "=": "bridge",
     "G": "gate",
-    "K": "terminal"
+    "D": "door_dungeon",
+    "B": "door_base"
   },
   "solid": [
     "tree",
@@ -17,50 +20,176 @@
     "gate"
   ],
   "rows": [
-    "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT",
-    "T............................T",
-    "T..TT....,,,,,,,,,,,,....TT..T",
-    "T..TT..,,,,,,,,,,,,,,..TTTT..T",
-    "T......,,K,,,,,,,,,,,......,.T",
-    "T.....,,,,,,,,,,,,,,,,...,,..T",
-    "T..,,,###G##,,,,,,,,,,,...,..T",
-    "T..,,##....###,,,,,,,,,......T",
-    "T..,,#......##,,,,,,,....TT..T",
-    "T..,,##....###,,,,,,,........T",
-    "T...,,,######,,,,,,,,...TTT..T",
-    "T....,,,,,,,,,,,,,,,.........T",
-    "T..TT.,,,,,,,,,,,,,,.......,.T",
-    "T..TT..,,,,,,,,,,,.......,...T",
-    "T......................,.....T",
-    "T....TT..........TT..........T",
-    "T............................T",
-    "T............................T",
-    "T............................T",
-    "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT"
+    "TTTTTTTTTTTTTTTDTTTTTTTTTTTTTT",
+    "TTTTTTTTTTTTTTT#TTTTTTTTTTTTTT",
+    "TT..........,,,#,,,.........TT",
+    "T....TT....,,,#,,,,,,...TT...T",
+    "T....TT...,,,##,,,,,,..TT...TT",
+    "T.........,,,,#,,,,,,,......TT",
+    "T..TT......,,,#,,,,,,....TT..T",
+    "T............,#,,,,,,TTTTTTTTT",
+    "T~~~~~~~~~~~=G==~~~~~~~~~~~~TT",
+    "T~~~~~~~~~~~=##=~~~~~~~~~~~~TT",
+    "T............####............T",
+    "T..TT........####.......TT...T",
+    "T.....,,,,,,,,####,,,,,,,,...T",
+    "T...,,,,,,,,,,,####,,,,,,,..TT",
+    "T..,,,TT,,,,,,,####,,,,..TT..T",
+    "T.,,,,,,,T,,,,,####,,,,,T....T",
+    "T..TT,,,,,,,,,,####,,,,,,,,..T",
+    "T.....,,,,,,,,,####..TT......T",
+    "T..TT....,,,,,,,,####.........",
+    "TTTTTTTTTTTTTTB#TTTTTTTTTTTTTT"
   ],
   "spawns": {
     "player_default": {
       "x": 15,
       "y": 16
     },
+    "from_base": {
+      "x": 15,
+      "y": 18
+    },
+    "from_dungeon": {
+      "x": 15,
+      "y": 3
+    },
     "npc_engineer_mira": {
-      "x": 12,
-      "y": 7
+      "x": 7,
+      "y": 13
+    },
+    "npc_pak_dengklek": {
+      "x": 17,
+      "y": 3
+    },
+    "npc_lulu": {
+      "x": 8,
+      "y": 16
     },
     "sign_post": {
-      "x": 17,
+      "x": 13,
       "y": 11
     },
     "gate_bridge": {
-      "x": 9,
-      "y": 6
+      "x": 13,
+      "y": 8
     }
   },
+  "props": [
+    {
+      "id": "hut_mira",
+      "ref": "prop_hut",
+      "x": 5,
+      "y": 12,
+      "solid": true
+    },
+    {
+      "id": "shrine_hint",
+      "ref": "prop_shrine",
+      "x": 25,
+      "y": 17,
+      "solid": true
+    },
+    {
+      "id": "flower_a",
+      "ref": "prop_flower",
+      "x": 9,
+      "y": 14
+    },
+    {
+      "id": "flower_b",
+      "ref": "prop_flower",
+      "x": 11,
+      "y": 17
+    },
+    {
+      "id": "flower_c",
+      "ref": "prop_flower",
+      "x": 6,
+      "y": 16
+    },
+    {
+      "id": "flower_d",
+      "ref": "prop_flower",
+      "x": 20,
+      "y": 13
+    },
+    {
+      "id": "flower_e",
+      "ref": "prop_flower",
+      "x": 22,
+      "y": 16
+    },
+    {
+      "id": "rock_a",
+      "ref": "prop_rock",
+      "x": 18,
+      "y": 12
+    },
+    {
+      "id": "rock_b",
+      "ref": "prop_rock",
+      "x": 24,
+      "y": 14
+    },
+    {
+      "id": "rock_c",
+      "ref": "prop_rock",
+      "x": 4,
+      "y": 10
+    },
+    {
+      "id": "rock_d",
+      "ref": "prop_rock",
+      "x": 21,
+      "y": 5
+    },
+    {
+      "id": "bush_a",
+      "ref": "prop_bush",
+      "x": 12,
+      "y": 13
+    },
+    {
+      "id": "bush_b",
+      "ref": "prop_bush",
+      "x": 19,
+      "y": 16
+    },
+    {
+      "id": "bush_c",
+      "ref": "prop_bush",
+      "x": 8,
+      "y": 11
+    },
+    {
+      "id": "bush_d",
+      "ref": "prop_bush",
+      "x": 25,
+      "y": 11
+    },
+    {
+      "id": "bush_e",
+      "ref": "prop_bush",
+      "x": 16,
+      "y": 12
+    }
+  ],
   "interactables": [
     {
       "id": "npc_engineer_mira",
       "kind": "npc",
-      "radius_tiles": 1.6
+      "radius_tiles": 1.7
+    },
+    {
+      "id": "npc_pak_dengklek",
+      "kind": "npc",
+      "radius_tiles": 1.7
+    },
+    {
+      "id": "npc_lulu",
+      "kind": "npc",
+      "radius_tiles": 1.7
     },
     {
       "id": "sign_post",
@@ -75,28 +204,44 @@
       "kind": "terminal",
       "radius_tiles": 1.5,
       "challenge_ref": "ch_gate_power"
-    }
-  ],
-  "enemy_spawns": [
-    {
-      "def": "enemy_glitch_scout",
-      "x": 7,
-      "y": 3
     },
     {
-      "def": "enemy_glitch_scout",
-      "x": 14,
-      "y": 3
+      "id": "door_dungeon",
+      "kind": "door",
+      "radius_tiles": 1.4,
+      "target": {
+        "world": "dungeon_01",
+        "spawn": "from_hub"
+      },
+      "lines_keys": [
+        "door.dungeon.enter"
+      ]
     },
     {
-      "def": "enemy_glitch_scout",
-      "x": 16,
-      "y": 4
+      "id": "door_base",
+      "kind": "door",
+      "radius_tiles": 1.4,
+      "target": {
+        "world": "base",
+        "spawn": "from_hub"
+      },
+      "lines_keys": [
+        "door.base.enter"
+      ]
     },
     {
-      "def": "enemy_glitch_warden",
-      "x": 10,
-      "y": 2
+      "id": "relic_secret",
+      "kind": "relic",
+      "radius_tiles": 1.4,
+      "props_at": {
+        "x": 27,
+        "y": 15
+      },
+      "lines_keys": [
+        "relic.secret.text"
+      ],
+      "credits": 25,
+      "idem": "relic:secret_valley"
     }
   ]
 }

@@ -1,6 +1,7 @@
 import { EventBus } from "@/game/EventBus";
 import { createClient } from "@/lib/supabase/client";
 import { t } from "@/lib/i18n";
+import { mirrorNotification } from "@/lib/notify";
 
 export type QuestState = "not_started" | "active" | "ready_turn_in" | "completed";
 
@@ -123,6 +124,7 @@ export class QuestEngine {
       });
       EventBus.emit("ui:levelup", {});
       void import("@/lib/analytics").then((m) => m.track("quest_completed", { quest: this.def.id }));
+      void mirrorNotification("quest_completed", { quest: this.def.id });
       EventBus.emit("wallet:refresh", {});
     } catch {
       EventBus.emit("ui:toast", { text: t("quest.rpcDown") });

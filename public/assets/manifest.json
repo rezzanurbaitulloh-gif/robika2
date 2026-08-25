@@ -1,7 +1,7 @@
 {
   "images": {
     "tiles_boot_valley": {
-      "url": "/assets/tiles/boot_valley_atlas.png"
+      "url": "/assets/tiles/boot_atlas.png"
     },
     "player_south": {
       "url": "/assets/characters/player_south.png"
@@ -38,6 +38,30 @@
     },
     "fx_slash": {
       "url": "/assets/props/fx_slash.png"
+    },
+    "tiles_dungeon": {
+      "url": "/assets/tiles/dungeon_atlas.png"
+    },
+    "npc_dengklek_south": {
+      "url": "/assets/characters/npc_dengklek_south.png"
+    },
+    "npc_lulu_south": {
+      "url": "/assets/characters/npc_lulu_south.png"
+    },
+    "prop_bush": {
+      "url": "/assets/props/prop_bush.png"
+    },
+    "prop_flower": {
+      "url": "/assets/props/prop_flower.png"
+    },
+    "prop_rock": {
+      "url": "/assets/props/prop_rock.png"
+    },
+    "prop_hut": {
+      "url": "/assets/props/prop_hut.png"
+    },
+    "prop_shrine": {
+      "url": "/assets/props/prop_shrine.png"
     }
   },
   "spritesheets": {
@@ -139,8 +163,22 @@
     }
   },
   "tiles": {
-    "grass": 0,
-    "grass_alt": 0,
-    "path": 1
+    "tiles_boot_valley": {
+      "grass": 0,
+      "path": 1,
+      "edgeN": 2,
+      "edgeS": 3,
+      "edgeE": 4,
+      "edgeW": 5,
+      "water": 6,
+      "waterEdgeN": 7,
+      "waterEdgeS": 8,
+      "waterEdgeE": 9,
+      "waterEdgeW": 10
+    },
+    "tiles_dungeon": {
+      "grass": 0,
+      "grass_alt": 1
+    }
   }
 }

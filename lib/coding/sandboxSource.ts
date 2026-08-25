@@ -57,7 +57,7 @@ self.onmessage = function (e) {
       throw new Error("Fungsi " + data.fnName + " tidak ditemukan. Pastikan namanya persis seperti instruksi.");
     }
     var ret = fn(bridge);
-    var envelope = { status: "success", logs: logs, effects: effects };
+    var envelope = { status: "success", logs: logs, effects: effects, bridgeVersion: BRIDGE_VERSION };
     var serialized = JSON.stringify({ effects: effects, logs: logs });
     if (serialized.length > 65536) {
       envelope.logs = logs.slice(0, 20).concat(["…(output dipotong: terlalu besar)"]);

@@ -1,14 +1,28 @@
 import bootValley from "@/content/worlds/boot_valley.json";
 import miraDialogue from "@/content/dialogue/mira.json";
+import dengklekDialogue from "@/content/dialogue/dengklek.json";
+import luluDialogue from "@/content/dialogue/lulu.json";
 import chGatePower from "@/content/challenges/ch_gate_power.json";
 import qBoot01 from "@/content/quests/q_boot_01_darkened_bridge.json";
+import dungeon01 from "@/content/worlds/dungeon_01.json";
+import baseWorld from "@/content/worlds/base.json";
 import enemiesJson from "@/content/enemies/enemies.json";
 import type { ChallengeDef } from "@/lib/coding/ChallengeRunner";
+
+export interface WorldProp {
+  id: string;
+  ref: string;
+  x: number;
+  y: number;
+  solid?: boolean;
+}
 
 export interface WorldDef {
   id: string;
   name_key: string;
+  atlas: string;
   tile_size: number;
+  props?: WorldProp[];
   legend: Record<string, string>;
   solid: string[];
   rows: string[];
@@ -21,6 +35,10 @@ export interface WorldDef {
     lines?: Array<{ speaker: string; text: string }>;
     lines_keys?: string[];
     challenge_ref?: string;
+    target?: { world: string; spawn: string };
+    props_at?: { x: number; y: number };
+    credits?: number;
+    idem?: string;
   }>;
 }
 
@@ -31,8 +49,16 @@ export interface DialogueDef {
   default_tree: string;
 }
 
-export const worlds: Record<string, WorldDef> = { boot_valley: bootValley as WorldDef };
-export const dialogues: Record<string, DialogueDef> = { npc_engineer_mira: miraDialogue as DialogueDef };
+export const worlds: Record<string, WorldDef> = {
+  boot_valley: bootValley as unknown as WorldDef,
+  dungeon_01: dungeon01 as unknown as WorldDef,
+  base: baseWorld as unknown as WorldDef,
+};
+export const dialogues: Record<string, DialogueDef> = {
+  npc_engineer_mira: miraDialogue as DialogueDef,
+  npc_pak_dengklek: dengklekDialogue as DialogueDef,
+  npc_lulu: luluDialogue as DialogueDef,
+};
 export const challenges: Record<string, ChallengeDef> = { ch_gate_power: chGatePower as unknown as ChallengeDef };
 
 export interface EnemyDef {

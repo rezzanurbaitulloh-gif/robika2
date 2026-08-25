@@ -14,7 +14,7 @@ export interface ManifestSheet {
 export interface AssetManifest {
   images: Record<string, ManifestImage>;
   spritesheets: Record<string, ManifestSheet>;
-  tiles?: Record<string, number>;
+  tiles?: Record<string, Record<string, number>>;
 }
 
 export const ASSET_MANIFEST_URL = "/assets/manifest.json";
