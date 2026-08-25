@@ -103,13 +103,13 @@ test.describe("gameplay core", () => {
               getScene: (k: string) => {
                 player: { setPosition: (x: number, y: number) => void };
                 combat?: { all: Array<{ isDead: boolean; hp: number; x: number; y: number }> };
-              };
+              } & { player: { setPosition: (x: number, y: number) => void } };
             };
           }
         }
       ).__ROBIKA_GAME;
       const hub = g?.scene.getScene("HubScene") as unknown as {
-        player: { x: number; y: number };
+        player: { x: number; y: number; setPosition: (x: number, y: number) => void };
         combat?: { all: Array<{ isDead: boolean; hp: number; x: number; y: number }> };
       };
       const alive = hub.combat?.all.filter((e) => !e.isDead) ?? [];
@@ -117,7 +117,7 @@ test.describe("gameplay core", () => {
       hub.player.setPosition(alive[0].x - 34, alive[0].y);
       return { none: false, hpBefore: alive[0].hp, playerHp: 50 };
     });
-    if (dungeon.none) return;
+    if (dungeon.none || dungeon.hpBefore === undefined) return;
 
     await page.keyboard.press("Space");
     await page.waitForTimeout(600);
