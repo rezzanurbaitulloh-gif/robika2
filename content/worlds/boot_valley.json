@@ -79,5 +79,27 @@
       "radius_tiles": 1.5,
       "challenge_ref": "ch_gate_power"
     }
+  ],
+  "enemy_spawns": [
+    {
+      "def": "enemy_glitch_scout",
+      "x": 7,
+      "y": 3
+    },
+    {
+      "def": "enemy_glitch_scout",
+      "x": 14,
+      "y": 3
+    },
+    {
+      "def": "enemy_glitch_scout",
+      "x": 16,
+      "y": 4
+    },
+    {
+      "def": "enemy_glitch_warden",
+      "x": 10,
+      "y": 2
+    }
   ]
 }

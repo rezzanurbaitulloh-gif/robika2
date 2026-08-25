@@ -6,6 +6,7 @@ import { touch } from "@/lib/game/touchInput";
 
 export function Hud() {
   const [saved, setSaved] = useState(false);
+  const [hp, setHp] = useState({ hp: 50, max: 50 });
 
   useEffect(() => {
     let t: ReturnType<typeof setTimeout>;
@@ -14,8 +15,12 @@ export function Hud() {
       clearTimeout(t);
       t = setTimeout(() => setSaved(false), 1600);
     });
+    const offHp = EventBus.on("ui:hp", (p) =>
+      setHp(p as { hp: number; max: number })
+    );
     return () => {
       off();
+      offHp();
       clearTimeout(t);
     };
   }, []);
@@ -24,6 +29,20 @@ export function Hud() {
     <div className="pointer-events-none absolute inset-x-0 top-0 z-20 flex items-start justify-between p-3">
       <div className="rounded bg-black/60 px-2 py-1 font-mono text-[11px] font-bold tracking-widest text-emerald-300">
         ROBIKA
+      </div>
+      <div className="rounded bg-black/60 px-2 py-1 font-mono text-[11px]">
+        <div className="flex items-center gap-1">
+          <span className="text-red-400">HP</span>
+          <div className="h-2 w-20 overflow-hidden rounded bg-black/70 ring-1 ring-red-900">
+            <div
+              className="h-full bg-red-500 transition-all"
+              style={{ width: `${(hp.hp / hp.max) * 100}%` }}
+            />
+          </div>
+          <span className="text-red-300">
+            {hp.hp}/{hp.max}
+          </span>
+        </div>
       </div>
       <div
         className={`rounded bg-black/60 px-2 py-1 font-mono text-[11px] transition-opacity ${
@@ -78,15 +97,26 @@ export function TouchControls() {
         <PadButton label="▼" onPress={set(0, 1)} onRelease={() => touch.reset()} />
         <span />
       </div>
-      <button
-        className="h-16 w-16 rounded-full bg-emerald-800/80 font-mono text-sm font-bold text-emerald-100 ring-2 ring-emerald-500 active:bg-emerald-600"
-        onClick={() => {
-          touch.reset();
-          EventBus.emit("input:interact");
-        }}
-      >
-        E
-      </button>
+      <div className="flex items-center gap-3">
+        <button
+          className="h-16 w-16 rounded-full bg-red-900/80 font-mono text-sm font-bold text-red-100 ring-2 ring-red-500 active:bg-red-600 md:hidden"
+          onClick={() => {
+            touch.reset();
+            EventBus.emit("input:attack");
+          }}
+        >
+          ⚔
+        </button>
+        <button
+          className="h-16 w-16 rounded-full bg-emerald-800/80 font-mono text-sm font-bold text-emerald-100 ring-2 ring-emerald-500 active:bg-emerald-600"
+          onClick={() => {
+            touch.reset();
+            EventBus.emit("input:interact");
+          }}
+        >
+          E
+        </button>
+      </div>
     </div>
   );
 }

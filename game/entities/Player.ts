@@ -14,6 +14,7 @@ export class Player extends Physics.Arcade.Sprite {
     scene.physics.add.existing(this);
     this.body!.setSize(20, 16).setOffset(14, 30);
     this.setDepth(10);
+    this.setName("player");
 
     for (const d of ["south", "north", "east", "west"] as Dir[]) {
       if (scene.anims.exists(`anim_player_walk_${d}`)) {

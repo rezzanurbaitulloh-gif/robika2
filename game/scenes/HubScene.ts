@@ -9,6 +9,10 @@ import { SaveSystem } from "@/game/systems/SaveSystem";
 import { touch } from "@/lib/game/touchInput";
 import type { ChallengeDef } from "@/lib/coding/ChallengeRunner";
 import { QuestEngine } from "@/game/quests/QuestEngine";
+import { Enemy } from "@/game/entities/Enemy";
+import { CombatSystem } from "@/game/combat/CombatSystem";
+import { enemies } from "@/game/data/ContentRegistry";
+import { createClient } from "@/lib/supabase/client";
 import { quests } from "@/game/data/ContentRegistry";
 import chGatePower from "@/content/challenges/ch_gate_power.json";
 
@@ -32,6 +36,10 @@ export class HubScene extends Phaser.Scene {
   private challengeRegistry: Record<string, ChallengeDef> = {};
   private terminalOpen = false;
   private questEngine?: QuestEngine;
+  private combat!: CombatSystem;
+  private playerHp = 50;
+  private playerMaxHp = 50;
+  private invulnUntil = 0;
 
   constructor() {
     super("HubScene");
@@ -48,6 +56,7 @@ export class HubScene extends Phaser.Scene {
     this.interactions = new InteractionSystem(this, this.runner);
     this.cursors = this.input.keyboard!.createCursorKeys();
     this.keyE = this.input.keyboard!.addKey("E");
+    this.input.keyboard!.on("keydown-SPACE", () => EventBus.emit("input:attack"));
     this.challengeRegistry = { ch_gate_power: chGatePower as ChallengeDef };
     EventBus.on("world:effect", (p) => this.onWorldEffect(p));
     EventBus.on("ui:terminal:open", () => {
@@ -193,6 +202,23 @@ export class HubScene extends Phaser.Scene {
       });
     }
 
+    // ---- Enemies ----
+    this.combat = new CombatSystem(this);
+    for (const es of world.enemy_spawns ?? []) {
+      const def = enemies[es.def];
+      if (!def || !this.textures.exists(def.texture)) continue;
+      const e = new Enemy(this, es.x * TS + TS / 2, es.y * TS + TS / 2, def);
+      this.physics.add.collider(e, solids);
+      this.physics.add.collider(e, this.player);
+      this.combat.register(e);
+    }
+    EventBus.on("input:attack", () => {
+      if (this.runner.isActive || this.terminalOpen || !this.player) return;
+      const dir = this.lastDir ?? { x: 0, y: 1 };
+      this.combat.tryAttack(this.player, dir, 5);
+    });
+    EventBus.on("enemy:defeated", (p) => void this.onEnemyDefeated(p));
+
     // ---- Player ----
     this.player = new Player(this, -999, -999);
     this.physics.add.collider(this.player, solids);
@@ -204,6 +230,39 @@ export class HubScene extends Phaser.Scene {
     this.cameras.main.setZoom(zoom);
 
     void this.spawnFromSave(world, TS);
+  }
+
+  private lastDir: { x: number; y: number } | null = null;
+
+  private async onEnemyDefeated(p: unknown) {
+    const { name, xp, credits } = p as { name: string; xp: number; credits: number };
+    EventBus.emit("ui:toast", { text: `${name} dikalahkan! +${xp} XP · +${credits} Credits` });
+    EventBus.emit("wallet:refresh", {});
+    try {
+      const supabase = createClient();
+      await supabase.rpc("grant_rewards", {
+        p_xp: xp,
+        p_credits: credits,
+        p_reason: "enemy_defeated",
+      });
+    } catch {}
+  }
+
+  private hitPlayer(dmg: number) {
+    if (this.time.now < this.invulnUntil) return;
+    this.invulnUntil = this.time.now + 600;
+    this.playerHp = Math.max(0, this.playerHp - dmg);
+    EventBus.emit("ui:hp", { hp: this.playerHp, max: this.playerMaxHp });
+    this.cameras.main.shake(120, 0.004);
+    this.player.setTint(0xff6666);
+    this.time.delayedCall(180, () => this.player.clearTint());
+    if (this.playerHp <= 0) {
+      this.playerHp = this.playerMaxHp;
+      const sp = worlds[this.worldId].spawns["player_default"]!;
+      this.player.setPosition(sp.x * 32 + 16, sp.y * 32 + 16);
+      EventBus.emit("ui:hp", { hp: this.playerHp, max: this.playerMaxHp });
+      EventBus.emit("ui:toast", { text: "Kau pingsan… kembali ke titik aman." });
+    }
   }
 
   private pathTileAt(rows: string[], x: number, y: number): number {
@@ -295,6 +354,7 @@ export class HubScene extends Phaser.Scene {
       const v = new Phaser.Math.Vector2(dx, dy);
       if (v.lengthSq() > 1) v.normalize();
       this.player.move(v.x, v.y);
+      if (v.lengthSq() > 0) this.lastDir = { x: v.x, y: v.y };
 
       if (Phaser.Input.Keyboard.JustDown(this.keyE)) EventBus.emit("input:interact");
     } else {
@@ -303,5 +363,10 @@ export class HubScene extends Phaser.Scene {
     }
 
     this.interactions.update(this.player.x, this.player.y);
+
+    const invuln = this.time.now < this.invulnUntil;
+    for (const e of this.combat.all) {
+      e.update(this.player.x, this.player.y, invuln, (dmg) => this.hitPlayer(dmg));
+    }
   }
 }

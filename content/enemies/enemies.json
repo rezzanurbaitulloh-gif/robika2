@@ -1,0 +1,44 @@
+{
+  "enemy_glitch_scout": {
+    "id": "enemy_glitch_scout",
+    "name": "Glitch Scout",
+    "texture": "enemy_glitch_scout_south",
+    "frame_size": 68,
+    "hp": 20,
+    "damage": 5,
+    "speed": 55,
+    "aggro_radius": 140,
+    "attack_radius": 34,
+    "attack_cooldown_ms": 900,
+    "xp": 15,
+    "credits": 5,
+    "respawn_ms": 15000,
+    "body_offset": {
+      "w": 24,
+      "h": 18,
+      "ox": 22,
+      "oy": 44
+    }
+  },
+  "enemy_glitch_warden": {
+    "id": "enemy_glitch_warden",
+    "name": "Glitch Warden",
+    "texture": "enemy_glitch_warden_south",
+    "frame_size": 92,
+    "hp": 90,
+    "damage": 12,
+    "speed": 42,
+    "aggro_radius": 170,
+    "attack_radius": 44,
+    "attack_cooldown_ms": 1100,
+    "xp": 60,
+    "credits": 30,
+    "respawn_ms": 30000,
+    "body_offset": {
+      "w": 40,
+      "h": 28,
+      "ox": 26,
+      "oy": 58
+    }
+  }
+}

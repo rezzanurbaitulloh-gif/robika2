@@ -29,6 +29,15 @@
     },
     "prop_gate": {
       "url": "/assets/props/gate.png"
+    },
+    "enemy_glitch_scout_south": {
+      "url": "/assets/characters/enemy_glitch_scout_south.png"
+    },
+    "enemy_glitch_warden_south": {
+      "url": "/assets/characters/enemy_glitch_warden_south.png"
+    },
+    "fx_slash": {
+      "url": "/assets/props/fx_slash.png"
     }
   },
   "spritesheets": {
