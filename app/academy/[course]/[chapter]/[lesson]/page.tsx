@@ -5,6 +5,7 @@ import Link from "next/link";
 import { findLesson } from "@/lib/academy/content";
 import { runExercise } from "@/lib/academy/exercise";
 import { track } from "@/lib/analytics";
+import { t } from "@/lib/i18n";
 
 type Params = { course: string; chapter: string; lesson: string };
 
@@ -50,12 +51,15 @@ export default function LessonPage({ params }: { params: Promise<Params> }) {
     if (!ex) return;
     setRunning(true);
     setOutput(["▶ Menjalankan di sandbox + validasi server…"]);
-    const res = await runExercise(lesson.id, lesson.outcomes.skills[0] ?? "js.umum", lesson.outcomes.xp, code, ex);
-    setOutput([...res.logs, ...(res.error ? [`✗ ${res.error}`] : []), ...(res.completed ? ["✓ LULUS — pelajaran selesai! +XP"] : [])]);
+    const res = await runExercise(lesson.id, courseId, lesson.outcomes.skills[0] ?? "js.umum", lesson.outcomes.xp, code, ex);
+    const lines = [...res.logs, ...(res.error ? [`✗ ${res.error}`] : [])];
     if (res.completed) {
+      lines.push(`✓ LULUS — pelajaran selesai! +${lesson.outcomes.xp} XP`);
+      if (res.certificate) lines.push("🎓 SERTIFIKAT KURSUS DITERBITKAN!");
       setCompleted(true);
       setDone(true);
     }
+    setOutput(lines);
     setRunning(false);
   }
 
@@ -77,10 +81,10 @@ export default function LessonPage({ params }: { params: Promise<Params> }) {
           « Akademi
         </Link>
         <p className="mt-3 text-[10px] uppercase tracking-widest text-emerald-700">
-          {found.course.title} · {found.chapter.title}
+          {t(found.course.title_key)} · {t(found.chapter.title_key)}
         </p>
         <h1 className="text-2xl font-bold text-emerald-300">
-          {lesson.title} {done && <span className="text-emerald-500">✓</span>}
+          {t(lesson.title_key)} {done && <span className="text-emerald-500">✓</span>}
         </h1>
 
         <div className="mt-6 space-y-6">
@@ -88,7 +92,7 @@ export default function LessonPage({ params }: { params: Promise<Params> }) {
             if (b.type === "text")
               return (
                 <p key={i} className="text-sm leading-relaxed text-emerald-200/90">
-                  {b.body?.split("**").map((part, j) => (j % 2 ? <strong key={j} className="text-emerald-300">{part}</strong> : part))}
+                  {t(b.body_key ?? "").split("**").map((part, j) => (j % 2 ? <strong key={j} className="text-emerald-300">{part}</strong> : part))}
                 </p>
               );
             if (b.type === "code")
@@ -100,7 +104,7 @@ export default function LessonPage({ params }: { params: Promise<Params> }) {
             if (b.type === "quiz")
               return (
                 <div key={i} className="rounded border border-emerald-900 bg-[#12262b] p-4">
-                  <p className="text-xs font-bold text-emerald-300">{b.question}</p>
+                  <p className="text-xs font-bold text-emerald-300">{t(b.question_key ?? "")}</p>
                   <div className="mt-3 space-y-2">
                     {b.options?.map((opt, oi) => {
                       const picked = quizPick === oi;
@@ -127,7 +131,7 @@ export default function LessonPage({ params }: { params: Promise<Params> }) {
                     })}
                   </div>
                   {quizPick !== null && (
-                    <p className="mt-2 text-[11px] text-emerald-500">{b.explain}</p>
+                    <p className="mt-2 text-[11px] text-emerald-500">{t(b.explain_key ?? "")}</p>
                   )}
                 </div>
               );
@@ -135,7 +139,7 @@ export default function LessonPage({ params }: { params: Promise<Params> }) {
               return (
                 <div key={i} className="rounded border border-emerald-800 bg-[#12262b] p-4">
                   <p className="text-xs font-bold text-emerald-300">🛠 Latihan</p>
-                  <p className="mt-1 text-xs text-emerald-400/90">{b.instruction}</p>
+                  <p className="mt-1 text-xs text-emerald-400/90">{t(b.instruction_key ?? "")}</p>
                   <textarea
                     value={code}
                     onChange={(e) => setCode(e.target.value)}
@@ -164,7 +168,7 @@ export default function LessonPage({ params }: { params: Promise<Params> }) {
               return (
                 <div key={i} className="rounded border border-amber-800 bg-amber-950/30 p-4">
                   <p className="text-xs font-bold text-amber-300">⚔ Practice in Game</p>
-                  <p className="mt-1 text-xs text-amber-200/80">{b.text}</p>
+                  <p className="mt-1 text-xs text-amber-200/80">{t(b.text_key ?? "")}</p>
                   <Link
                     href="/game"
                     className="mt-3 inline-block rounded bg-amber-600 px-4 py-1.5 text-xs font-bold text-[#0d1b1e]"

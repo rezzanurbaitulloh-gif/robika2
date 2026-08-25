@@ -14,10 +14,11 @@ export type ExerciseBlock = {
   starter?: string;
   expect: { args: unknown[]; equals: unknown };
 };
-export type ExerciseResult = RunResult & { completed?: boolean };
+export type ExerciseResult = RunResult & { completed?: boolean; certificate?: boolean };
 
 export async function runExercise(
   lessonId: string,
+  courseId: string,
   skill: string,
   xp: number,
   code: string,
@@ -65,9 +66,9 @@ export async function runExercise(
     return { ...client, status: "error", error: "Server tidak terjangkau — coba lagi saat online." };
   }
 
-  // 3) akui penyelesaian: XP idempoten + mastery + analytics
-  await completeLesson(lessonId, skill, xp);
-  return { ...client, completed: true };
+  // 3) akui penyelesaian via satu RPC server (XP+mastery+completion+sertifikat)
+  const res = await completeLesson(lessonId, courseId, skill, xp);
+  return { ...client, completed: true, certificate: res?.certificate ?? false };
 }
 
 function runClient(code: string, block: ExerciseBlock): Promise<ExerciseResult> {
@@ -108,23 +109,24 @@ function runClient(code: string, block: ExerciseBlock): Promise<ExerciseResult> 
   });
 }
 
-async function completeLesson(lessonId: string, skill: string, xp: number): Promise<void> {
+async function completeLesson(
+  lessonId: string,
+  courseId: string,
+  skill: string,
+  xp: number
+): Promise<{ certificate?: boolean } | null> {
   try {
     const supabase = createClient();
-    const { error } = await supabase.rpc("grant_rewards", {
+    const { data, error } = await supabase.rpc("complete_lesson", {
+      p_course_id: courseId,
+      p_lesson_id: lessonId,
+      p_skill: skill,
       p_xp: xp,
-      p_credits: 5,
-      p_reason: "lesson_completed",
-      p_idem: `lesson:${lessonId}`,
     });
-    if (!error) {
-      await supabase.rpc("record_mastery", {
-        p_skill: skill,
-        p_delta: 25,
-        p_evidence: lessonId,
-      });
-      track("lesson_completed", { lesson: lessonId, skill });
-    }
+    if (error) return null;
     localStorage.setItem(`robika.lesson.${lessonId}`, "1");
-  } catch {}
+    return data as { certificate?: boolean };
+  } catch {
+    return null;
+  }
 }

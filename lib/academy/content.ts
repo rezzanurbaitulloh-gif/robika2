@@ -4,38 +4,38 @@ import jsDasarKode from "@/content/academy/js_dasar_kode.json";
 
 export interface LessonBlock {
   type: "text" | "code" | "quiz" | "exercise" | "practice";
-  body?: string;
+  body_key?: string;
   code?: string;
-  question?: string;
+  question_key?: string;
   options?: string[];
   correctIndex?: number;
-  explain?: string;
-  instruction?: string;
+  explain_key?: string;
+  instruction_key?: string;
   fnName?: string;
   starter?: string;
   expect?: { args: unknown[]; equals: unknown };
-  text?: string;
+  text_key?: string;
   questHint?: string;
 }
 
 export interface LessonDef {
   id: string;
-  title: string;
+  title_key: string;
   blocks: LessonBlock[];
   outcomes: { skills: string[]; xp: number };
 }
 
 export interface ChapterDef {
   id: string;
-  title: string;
+  title_key: string;
   lessons: LessonDef[];
 }
 
 export interface CourseDef {
   id: string;
-  title: string;
+  title_key: string;
   language: string;
-  description: string;
+  description_key: string;
   chapters: ChapterDef[];
 }
 
