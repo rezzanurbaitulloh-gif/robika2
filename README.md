@@ -27,6 +27,7 @@ npm run dev                  # http://localhost:3000
 - [x] Phase 2 — Coding (Monaco, sandbox, bridge, challenges)
 - [x] Phase 3 — Quest (objectives, quest state, rewards)
 - [x] Phase 4 — Combat (enemies, attack, damage, boss)
-- [ ] Phase 5 — Academy (lessons, exercises, challenges, mastery)
+- [x] Phase 5 — Academy (lessons, exercises, challenges, mastery)
+- [ ] Phase 6 — CodeLab/Studio (projects, files, run, preview, history)
 
 Payments and gacha ship behind feature flags (`lib/config/flags.ts`) until verified.
