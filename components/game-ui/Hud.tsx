@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { EventBus } from "@/game/EventBus";
 import { touch } from "@/lib/game/touchInput";
+import { InboxDrawer } from "@/components/game-ui/InboxDrawer";
 
 export function Hud() {
   const [saved, setSaved] = useState(false);
@@ -27,8 +28,11 @@ export function Hud() {
 
   return (
     <div className="pointer-events-none absolute inset-x-0 top-0 z-20 flex items-start justify-between p-3">
-      <div className="rounded bg-black/60 px-2 py-1 font-mono text-[11px] font-bold tracking-widest text-emerald-300">
-        ROBIKA
+      <div className="flex items-center gap-2">
+        <div className="rounded bg-black/60 px-2 py-1 font-mono text-[11px] font-bold tracking-widest text-emerald-300">
+          ROBIKA
+        </div>
+        <InboxDrawer />
       </div>
       <div className="rounded bg-black/60 px-2 py-1 font-mono text-[11px]">
         <div className="flex items-center gap-1">

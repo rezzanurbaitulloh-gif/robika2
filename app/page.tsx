@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 export default function TitlePage() {
@@ -65,6 +66,10 @@ export default function TitlePage() {
           <a href="/account/register" className="underline hover:text-emerald-300">
             Daftar Akun Baru
           </a>
+          <span aria-hidden>·</span>
+          <Link href="/academy" className="underline hover:text-emerald-300">
+            Akademi
+          </Link>
         </div>
       </div>
 

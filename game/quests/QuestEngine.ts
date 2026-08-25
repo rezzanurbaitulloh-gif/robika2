@@ -1,5 +1,6 @@
 import { EventBus } from "@/game/EventBus";
 import { createClient } from "@/lib/supabase/client";
+import { t } from "@/lib/i18n";
 
 export type QuestState = "not_started" | "active" | "ready_turn_in" | "completed";
 
@@ -18,9 +19,9 @@ export interface QuestView {
 
 interface QuestDef {
   id: string;
-  title: string;
+  title_key: string;
   giver: string;
-  objectives: Array<{ id: string; type: string; target: string; text: string }>;
+  objectives: Array<{ id: string; type: string; target: string; text_key: string }>;
   rewards: { xp: number; credits: number };
 }
 
@@ -56,11 +57,11 @@ export class QuestEngine {
   view(): QuestView {
     return {
       id: this.def.id,
-      title: this.def.title,
+      title: t(this.def.title_key),
       state: this.state,
       objectives: this.def.objectives.map((o) => ({
         id: o.id,
-        text: o.text,
+        text: t(o.text_key),
         done: o.type === "turn_in" ? false : this.objectiveDone(o.id),
       })),
     };
@@ -86,9 +87,7 @@ export class QuestEngine {
       this.flags[QUEST_FLAG] = "active";
       this.onFlagsDirty();
       EventBus.emit("quest:updated", this.view());
-      EventBus.emit("ui:toast", {
-        text: `Quest baru: ${this.def.title}! (lihat pelacak kiri-atas)`,
-      });
+      EventBus.emit("ui:toast", { text: t("quest.new", { title: t(this.def.title_key) }) });
     }
     if (tree === "turn_in" && this.state === "ready_turn_in") {
       void this.turnIn();
@@ -106,6 +105,10 @@ export class QuestEngine {
         status: string;
         rewards?: { credits?: number; xp_granted?: number; level?: number };
       };
+      if (res.status === "objectives_incomplete") {
+        EventBus.emit("ui:toast", { text: t("quest.incomplete") });
+        return;
+      }
       if (res.status === "already_completed") {
         this.flags[QUEST_FLAG] = "done";
         this.onFlagsDirty();
@@ -116,13 +119,13 @@ export class QuestEngine {
       this.onFlagsDirty();
       EventBus.emit("quest:updated", this.view());
       EventBus.emit("ui:toast", {
-        text: `Quest selesai! +${res.rewards?.xp_granted ?? 0} XP · +${res.rewards?.credits ?? 0} Credits`,
+        text: t("quest.done", { xp: res.rewards?.xp_granted ?? 0, credits: res.rewards?.credits ?? 0 }),
       });
+      EventBus.emit("ui:levelup", {});
+      void import("@/lib/analytics").then((m) => m.track("quest_completed", { quest: this.def.id }));
       EventBus.emit("wallet:refresh", {});
     } catch {
-      EventBus.emit("ui:toast", {
-        text: "Gagal melapor ke server (RPC quest belum aktif). Coba lagi nanti.",
-      });
+      EventBus.emit("ui:toast", { text: t("quest.rpcDown") });
     }
   }
 }

@@ -18,11 +18,21 @@ self.onmessage = function (e) {
   var effects = [];
   var maxLogs = data.maxLogs || 60;
 
+  var BRIDGE_VERSION = 1;
+  var verbCounts = {};
+  var VERB_QUOTA = 50;
+
   var bridge = new Proxy({}, {
     get: function (target, prop) {
+      if (prop === "version") return BRIDGE_VERSION;
       return function () {
+        var name = String(prop);
+        verbCounts[name] = (verbCounts[name] || 0) + 1;
+        if (verbCounts[name] > VERB_QUOTA) {
+          throw new Error("Kuota bridge." + name + " terlampaui (maks " + VERB_QUOTA + " panggilan).");
+        }
         var args = Array.prototype.slice.call(arguments);
-        if (effects.length < 200) effects.push({ verb: String(prop), args: args });
+        if (effects.length < 200) effects.push({ verb: name, args: args });
         return undefined;
       };
     }
@@ -46,8 +56,15 @@ self.onmessage = function (e) {
     if (typeof fn !== "function") {
       throw new Error("Fungsi " + data.fnName + " tidak ditemukan. Pastikan namanya persis seperti instruksi.");
     }
-    fn(bridge);
-    self.postMessage({ status: "success", logs: logs, effects: effects });
+    var ret = fn(bridge);
+    var envelope = { status: "success", logs: logs, effects: effects };
+    var serialized = JSON.stringify({ effects: effects, logs: logs });
+    if (serialized.length > 65536) {
+      envelope.logs = logs.slice(0, 20).concat(["…(output dipotong: terlalu besar)"]);
+      envelope.effects = effects.slice(0, 100);
+    }
+    if (data.expect && typeof ret !== "undefined") envelope.returned = ret;
+    self.postMessage(envelope);
   } catch (err) {
     var msg = err && err.message ? err.message : String(err);
     var line = err && err.stack ? (err.stack.match(/<anonymous>:(\d+)/) || [])[1] : null;

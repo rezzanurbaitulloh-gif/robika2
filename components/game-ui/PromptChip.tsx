@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { EventBus } from "@/game/EventBus";
 import { touch } from "@/lib/game/touchInput";
+import { t } from "@/lib/i18n";
 
 export function PromptChip() {
   const [label, setLabel] = useState<string | null>(null);
@@ -24,7 +25,7 @@ export function PromptChip() {
           EventBus.emit("input:interact");
         }}
       >
-        [E] {label}
+        [E] {t(`hud.${label}`)}
       </button>
     </div>
   );

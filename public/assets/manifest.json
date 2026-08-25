@@ -72,6 +72,70 @@
       "frames": 6,
       "fps": 8,
       "repeat": -1
+    },
+    "enemy_glitch_scout_walk_south": {
+      "url": "/assets/characters/enemy_glitch_scout_walk_south.png",
+      "frameWidth": 68,
+      "frameHeight": 68,
+      "frames": 6,
+      "fps": 7,
+      "repeat": -1
+    },
+    "enemy_glitch_scout_walk_north": {
+      "url": "/assets/characters/enemy_glitch_scout_walk_north.png",
+      "frameWidth": 68,
+      "frameHeight": 68,
+      "frames": 6,
+      "fps": 7,
+      "repeat": -1
+    },
+    "enemy_glitch_scout_walk_east": {
+      "url": "/assets/characters/enemy_glitch_scout_walk_east.png",
+      "frameWidth": 68,
+      "frameHeight": 68,
+      "frames": 6,
+      "fps": 7,
+      "repeat": -1
+    },
+    "enemy_glitch_scout_walk_west": {
+      "url": "/assets/characters/enemy_glitch_scout_walk_west.png",
+      "frameWidth": 68,
+      "frameHeight": 68,
+      "frames": 6,
+      "fps": 7,
+      "repeat": -1
+    },
+    "enemy_glitch_warden_walk_south": {
+      "url": "/assets/characters/enemy_glitch_warden_walk_south.png",
+      "frameWidth": 92,
+      "frameHeight": 92,
+      "frames": 6,
+      "fps": 7,
+      "repeat": -1
+    },
+    "enemy_glitch_warden_walk_north": {
+      "url": "/assets/characters/enemy_glitch_warden_walk_north.png",
+      "frameWidth": 92,
+      "frameHeight": 92,
+      "frames": 6,
+      "fps": 7,
+      "repeat": -1
+    },
+    "enemy_glitch_warden_walk_east": {
+      "url": "/assets/characters/enemy_glitch_warden_walk_east.png",
+      "frameWidth": 92,
+      "frameHeight": 92,
+      "frames": 6,
+      "fps": 7,
+      "repeat": -1
+    },
+    "enemy_glitch_warden_walk_west": {
+      "url": "/assets/characters/enemy_glitch_warden_walk_west.png",
+      "frameWidth": 92,
+      "frameHeight": 92,
+      "frames": 6,
+      "fps": 7,
+      "repeat": -1
     }
   },
   "tiles": {

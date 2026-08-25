@@ -1,0 +1,46 @@
+
+
+import Link from "next/link";
+
+export default function AcademyPage() {
+  return (
+    <main className="min-h-screen bg-[#0d1b1e] p-6 font-mono text-emerald-100">
+      <div className="mx-auto max-w-3xl">
+        <Link href="/game" className="text-xs text-emerald-600 underline">
+          « Kembali
+        </Link>
+        <h1
+          className="mt-3 text-4xl font-black tracking-widest text-emerald-400"
+          style={{ textShadow: "3px 3px 0 #064e3b" }}
+        >
+          AKADEMI
+        </h1>
+        <p className="mt-2 text-sm text-emerald-300/80">
+          Belajar pemrograman sungguhan — materi yang sama dengan dunia luar.
+        </p>
+
+        <div className="mt-8 space-y-4">
+          <Link
+            href="/academy/js_dasar_kode/variabel/apa-itu-variabel"
+            className="block rounded-lg border border-emerald-800 bg-[#12262b] p-5 transition-colors hover:border-emerald-500"
+          >
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-[10px] uppercase tracking-widest text-emerald-600">
+                  Kursus · JavaScript
+                </p>
+                <h2 className="mt-1 text-xl font-bold text-emerald-300">Dasar Kode</h2>
+                <p className="mt-1 text-xs text-emerald-400/80">
+                  Variabel → Kondisi → Loop. Fondasi untuk menyalakan dunia.
+                </p>
+              </div>
+              <span className="rounded bg-emerald-900 px-3 py-1 text-xs text-emerald-300">
+                3 Bab
+              </span>
+            </div>
+          </Link>
+        </div>
+      </div>
+    </main>
+  );
+}

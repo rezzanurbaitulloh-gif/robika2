@@ -1,6 +1,7 @@
 import { Scene } from "phaser";
 import { EventBus } from "@/game/EventBus";
 import { ASSET_MANIFEST_URL, type AssetManifest } from "@/game/data/assetTypes";
+import { t } from "@/lib/i18n";
 
 export class BootScene extends Scene {
   private manifest!: AssetManifest;
@@ -17,7 +18,7 @@ export class BootScene extends Scene {
     const bar = this.add.rectangle(width / 2, height / 2, 2, 8, 0x34d399).setOrigin(0.5);
     this.add.rectangle(width / 2, height / 2, barW, 10, 0x12262b).setOrigin(0.5);
     this.add
-      .text(width / 2, height / 2 - 28, "Memuat Aetheria…", {
+      .text(width / 2, height / 2 - 28, t("loading.world"), {
         fontFamily: "monospace",
         fontSize: "14px",
         color: "#a7f3d0",
@@ -39,7 +40,7 @@ export class BootScene extends Scene {
     const raw = this.cache.json.get("asset_manifest") as AssetManifest | null;
     if (!raw) {
       this.add
-        .text(this.scale.width / 2, this.scale.height / 2, "Gagal memuat manifest.\nPeriksa koneksi lalu muat ulang.", {
+        .text(this.scale.width / 2, this.scale.height / 2, t("loading.manifestFail"), {
           fontFamily: "monospace",
           fontSize: "14px",
           color: "#f87171",
@@ -78,7 +79,7 @@ export class BootScene extends Scene {
       }
       this.registry.set("manifest", this.manifest);
       EventBus.emit("game.booted", { scene: "BootScene" });
-      this.scene.start("HubScene", { worldId: "boot_valley" });
+      this.scene.start("TitleScene", {});
     });
 
     this.load.start();

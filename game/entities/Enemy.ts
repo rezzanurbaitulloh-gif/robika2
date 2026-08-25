@@ -1,5 +1,6 @@
 import * as Phaser from "phaser";
 import { EventBus } from "@/game/EventBus";
+import { t } from "@/lib/i18n";
 
 export interface EnemyDef {
   id: string;
@@ -45,6 +46,31 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
     this.setDepth(y);
     this.hpBar = scene.add.graphics().setDepth(y + 1);
     this.drawHpBar();
+    this.walkAnims = ["south", "north", "east", "west"]
+      .map((d) => `anim_enemy_walk_${d}`)
+      .filter((k) => scene.anims.exists(k));
+  }
+
+  private walkAnims: string[] = [];
+  private dir = "south";
+  private enraged = false;
+
+  private playWalk(vx: number, vy: number) {
+    if (!this.walkAnims.length) return;
+    if (Math.abs(vx) > Math.abs(vy)) this.dir = vx > 0 ? "east" : "west";
+    else if (vy !== 0) this.dir = vy > 0 ? "south" : "north";
+    const key = `anim_enemy_walk_${this.dir}`;
+    if (this.anims.currentAnim?.key !== key || !this.anims.isPlaying) this.play(key);
+  }
+
+  /** D05 — pola boss: fase mengamuk di bawah 50% HP. */
+  private checkEnrage() {
+    if (!this.def.id.includes("warden") || this.enraged) return;
+    if (this.hp <= this.def.hp / 2) {
+      this.enraged = true;
+      this.setTint(0xff5555);
+      EventBus.emit("ui:toast", { text: (this.scene.time.now, t("combat.bossEnrage")) });
+    }
   }
 
   private drawHpBar() {
@@ -121,6 +147,9 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
   }
 
   update(playerX: number, playerY: number, playerInvuln: boolean, onHitPlayer: (dmg: number) => void) {
+    this.checkEnrage();
+    const speed = this.def.speed * (this.enraged ? 1.3 : 1);
+    const atkCd = this.enraged ? this.def.attack_cooldown_ms * 0.7 : this.def.attack_cooldown_ms;
     if (this.mode === "dead") {
       if (this.scene.time.now >= this.respawnAt) this.respawn();
       return;
@@ -138,12 +167,13 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
       this.mode = "attack";
       body.setVelocity(0, 0);
       if (t >= this.attackCd && !playerInvuln) {
-        this.attackCd = t + this.def.attack_cooldown_ms;
+        this.attackCd = t + atkCd;
         onHitPlayer(this.def.damage);
       }
     } else if (dist < this.def.aggro_radius) {
       this.mode = "chase";
-      this.scene.physics.moveTo(this, playerX, playerY, this.def.speed);
+      this.scene.physics.moveTo(this, playerX, playerY, speed);
+      this.playWalk(body.velocity.x, body.velocity.y);
     } else {
       this.mode = "idle";
       if (!this.wanderTarget || Phaser.Math.Distance.Between(this.x, this.y, this.wanderTarget.x, this.wanderTarget.y) < 8) {
@@ -153,6 +183,7 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
         );
       }
       this.scene.physics.moveTo(this, this.wanderTarget.x, this.wanderTarget.y, this.def.speed * 0.4);
+      this.playWalk(body.velocity.x, body.velocity.y);
     }
 
     this.setDepth(this.y);

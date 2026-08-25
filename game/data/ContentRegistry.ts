@@ -19,13 +19,15 @@ export interface WorldDef {
     kind: string;
     radius_tiles: number;
     lines?: Array<{ speaker: string; text: string }>;
+    lines_keys?: string[];
     challenge_ref?: string;
   }>;
 }
 
 export interface DialogueDef {
   npc_id: string;
-  trees: Record<string, Array<{ speaker: string; text: string }>>;
+  speaker?: string;
+  trees: Record<string, string[]>;
   default_tree: string;
 }
 
@@ -53,9 +55,9 @@ export const enemies: Record<string, EnemyDef> = enemiesJson as Record<string, E
 
 export interface QuestDef {
   id: string;
-  title: string;
+  title_key: string;
   giver: string;
-  objectives: Array<{ id: string; type: string; target: string; text: string }>;
+  objectives: Array<{ id: string; type: string; target: string; text_key: string }>;
   rewards: { xp: number; credits: number };
 }
 export const quests: Record<string, QuestDef> = {

@@ -66,11 +66,8 @@
       "id": "sign_post",
       "kind": "sign",
       "radius_tiles": 1.4,
-      "lines": [
-        {
-          "speaker": "sign",
-          "text": "\u00ab Lembah Boot \u2014 tempat semua petualangan kode dimulai. \u00bb"
-        }
+      "lines_keys": [
+        "sign.boot.text"
       ]
     },
     {

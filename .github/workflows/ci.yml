@@ -20,7 +20,26 @@ jobs:
       - run: npm ci
       - run: npx tsc --noEmit
       - run: npm run lint -- --max-warnings=0
+      - name: Asset manifest integrity (D20)
+        run: node scripts/check-assets.mjs
       - name: Secret scan (service keys must never ship)
         run: |
-          ! grep -rEn "sbp_[0-9a-f]{40}|Mid-server-[A-Za-z0-9_]+|SUPABASE_SERVICE_ROLE_KEY=" --include="*.ts" --include="*.tsx" --include="*.js" app components lib game || exit 1
+          ! grep -rEn "sbp_[0-9a-f]{40}|Mid-server-[A-Za-z0-9_]+|SUPABASE_SERVICE_ROLE_KEY=" --include="*.ts" --include="*.tsx" --include="*.js" app components lib game supabase/functions || exit 1
+      - run: npx vitest run
       - run: npm run build
+
+  e2e-smoke:
+    runs-on: ubuntu-latest
+    needs: verify
+    env:
+      NEXT_PUBLIC_SUPABASE_URL: https://placeholder.supabase.co
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: placeholder-anon-key-for-build-only
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install chromium --with-deps
+      - run: npx playwright test

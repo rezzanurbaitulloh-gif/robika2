@@ -1,4 +1,5 @@
 import { SANDBOX_SOURCE, type BridgeEffect, type RunResult } from "@/lib/coding/sandboxSource";
+import { track } from "@/lib/analytics";
 
 export type { RunResult, BridgeEffect };
 
@@ -38,6 +39,7 @@ export function runChallenge(challenge: ChallengeDef, code: string): Promise<Run
     };
 
     const timer = setTimeout(() => {
+      track("code_run", { challenge: challenge.id, status: "timeout" });
       finish({
         status: "timeout",
         logs: [],
@@ -73,7 +75,7 @@ export function runChallenge(challenge: ChallengeDef, code: string): Promise<Run
   });
 }
 
-function validateTests(
+export function validateTests(
   tests: ChallengeTest[],
   effects: BridgeEffect[]
 ): ChallengeTest | null {

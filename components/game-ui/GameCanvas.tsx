@@ -8,6 +8,9 @@ import { PromptChip } from "@/components/game-ui/PromptChip";
 import { CodeTerminal } from "@/components/game-ui/CodeTerminal";
 import { Toast } from "@/components/game-ui/Toast";
 import { QuestTracker, WalletChip } from "@/components/game-ui/QuestTracker";
+import { StoryIntro } from "@/components/game-ui/StoryIntro";
+import { SettingsOverlay, RotatePrompt } from "@/components/game-ui/SettingsOverlay";
+import { bindEngineEvents } from "@/lib/game/stores";
 
 export function GameCanvas() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -15,13 +18,27 @@ export function GameCanvas() {
   const [status, setStatus] = useState<"loading" | "ready" | "error">("loading");
 
   useEffect(() => {
+    void import("@/lib/game/keyboardInput").then((m) => m.attachKeyboardInput());
+    const unbind = bindEngineEvents();
+    return () => {
+      unbind();
+    };
+  }, []);
+
+  useEffect(() => {
     let cancelled = false;
 
     (async () => {
       try {
-        const [{ AUTO, Scale, Game }, { BootScene }, { HubScene }] = await Promise.all([
+        const [
+          { AUTO, Scale, Game },
+          { BootScene },
+          { TitleScene },
+          { HubScene },
+        ] = await Promise.all([
           import("phaser"),
           import("@/game/scenes/BootScene"),
+          import("@/game/scenes/TitleScene"),
           import("@/game/scenes/HubScene"),
         ]);
         if (cancelled || !containerRef.current) return;
@@ -41,7 +58,7 @@ export function GameCanvas() {
             width: 960,
             height: 540,
           },
-          scene: [BootScene, HubScene],
+          scene: [BootScene, TitleScene, HubScene],
         });
         (window as unknown as { __ROBIKA_GAME?: Game }).__ROBIKA_GAME = gameRef.current;
         setStatus("ready");
@@ -83,6 +100,9 @@ export function GameCanvas() {
           <CodeTerminal />
           <Toast />
           <TouchControls />
+          <StoryIntro />
+          <SettingsOverlay />
+          <RotatePrompt />
         </>
       )}
     </main>

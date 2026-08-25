@@ -1,0 +1,62 @@
+{
+  "id": "js_dasar_kode",
+  "title": "Dasar Kode",
+  "language": "javascript",
+  "description": "Fondasi pemrograman sungguhan: variabel, kondisi, dan loop — bahasa yang sama dengan Terminal Kode Aetheria.",
+  "chapters": [
+    {
+      "id": "variabel",
+      "title": "Variabel — Kotak Penyimpan",
+      "lessons": [
+        {
+          "id": "apa-itu-variabel",
+          "title": "Apa itu Variabel?",
+          "blocks": [
+            { "type": "text", "body": "Di Aetheria, **variabel** adalah kotak berlabel tempatmu menyimpan sesuatu: angka energi, nama petualang, atau pesan rahasia." },
+            { "type": "text", "body": "Kamu membuatnya dengan `let`, memberi nama, lalu mengisinya dengan `=`." },
+            { "type": "code", "code": "let energi = 50;\nlet namaPetualang = \"Reja\";\n\nconsole.log(namaPetualang); // Reja\nconsole.log(energi + 10);   // 60" },
+            { "type": "quiz", "question": "Mana cara yang BENAR membuat variabel berisi angka 25?", "options": ["let energi = 25;", "energi = let 25;", "25 = let energi;"], "correctIndex": 0, "explain": "Bentuknya: let <nama> = <nilai>;" },
+            { "type": "exercise", "instruction": "Lengkapi fungsi sapa() agar mengembalikan teks \"Halo, Aetheria!\" — gunakan variabel sambutan.", "fnName": "sapa", "starter": "function sapa() {\n  let sambutan = \"Halo, Aetheria!\";\n  // kembalikan sambutan\n\n}", "expect": { "args": [], "equals": "Halo, Aetheria!" } }
+          ],
+          "outcomes": { "skills": ["js.variabel"], "xp": 20 }
+        }
+      ]
+    },
+    {
+      "id": "kondisi",
+      "title": "Kondisi — Jalan Bercabang",
+      "lessons": [
+        {
+          "id": "jika-dan-lainnya",
+          "title": "Jika & Lainnya (if/else)",
+          "blocks": [
+            { "type": "text", "body": "Gerbang Aetheria membaca kondisi: **jika** energi cukup → buka; **jika tidak** → tetap terkunci. Di kode: `if` dan `else`." },
+            { "type": "code", "code": "let energi = 30;\n\nif (energi >= 25) {\n  console.log(\"Gerbang terbuka!\");\n} else {\n  console.log(\"Energi kurang...\");\n}" },
+            { "type": "quiz", "question": "energi = 10. Apa yang dicetak kode di atas?", "options": ["Gerbang terbuka!", "Energi kurang...", "Error"], "correctIndex": 1, "explain": "10 >= 25 adalah false, jadi blok else yang jalan." },
+            { "type": "exercise", "instruction": "Lengkapi cekGerbang(energi): kembalikan \"buka\" jika energi >= 25, selain itu \"terkunci\".", "fnName": "cekGerbang", "starter": "function cekGerbang(energi) {\n  // jika energi >= 25 kembalikan \"buka\"\n  // selain itu kembalikan \"terkunci\"\n\n}", "expect": { "args": [30], "equals": "buka" } }
+          ],
+          "outcomes": { "skills": ["js.kondisi"], "xp": 25 }
+        }
+      ]
+    },
+    {
+      "id": "loop",
+      "title": "Loop — Mantra Berulang",
+      "lessons": [
+        {
+          "id": "loop-for",
+          "title": "Loop for — Ulangi dengan Hitungan",
+          "blocks": [
+            { "type": "text", "body": "Gerbang jembatan butuh **3 denyut**. Menulis bridge.pulse() tiga kali? Bisa saja — tapi programmer pakai **loop**." },
+            { "type": "code", "code": "for (let i = 0; i < 3; i++) {\n  console.log(\"denyut ke-\" + i);\n}\n// denyut ke-0, denyut ke-1, denyut ke-2" },
+            { "type": "text", "body": "Tiga bagian: mulai (`let i = 0`), syarat lanjut (`i < 3`), dan langkah (`i++`)." },
+            { "type": "quiz", "question": "for (let i = 0; i < 5; i++) — berapa kali badan loop berjalan?", "options": ["4 kali", "5 kali", "6 kali"], "correctIndex": 1, "explain": "i = 0,1,2,3,4 → lima kali." },
+            { "type": "exercise", "instruction": "Lengkapi jumlahDenyut(n): kembalikan jumlah total denyut jika loop berjalan n kali — cukup kembalikan n.", "fnName": "jumlahDenyut", "starter": "function jumlahDenyut(n) {\n  // kembalikan n\n\n}", "expect": { "args": [3], "equals": 3 } },
+            { "type": "practice", "text": "Saatnya membuktikan di dunia nyata: buka Terminal Kode di dekat gerbang jembatan dan nyalakan dengan loop 3 denyut!", "questHint": "q_boot_01_darkened_bridge" }
+          ],
+          "outcomes": { "skills": ["js.loop"], "xp": 30 }
+        }
+      ]
+    }
+  ]
+}

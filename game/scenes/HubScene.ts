@@ -7,12 +7,14 @@ import { DialogueRunner } from "@/game/dialogue/DialogueRunner";
 import { InteractionSystem, type Interactable } from "@/game/systems/InteractionSystem";
 import { SaveSystem } from "@/game/systems/SaveSystem";
 import { touch } from "@/lib/game/touchInput";
+import { keyboardState } from "@/lib/game/keyboardInput";
 import type { ChallengeDef } from "@/lib/coding/ChallengeRunner";
 import { QuestEngine } from "@/game/quests/QuestEngine";
 import { Enemy } from "@/game/entities/Enemy";
 import { CombatSystem } from "@/game/combat/CombatSystem";
 import { enemies } from "@/game/data/ContentRegistry";
 import { createClient } from "@/lib/supabase/client";
+import { t } from "@/lib/i18n";
 import { quests } from "@/game/data/ContentRegistry";
 import chGatePower from "@/content/challenges/ch_gate_power.json";
 
@@ -27,7 +29,6 @@ export class HubScene extends Phaser.Scene {
   private interactions!: InteractionSystem;
   private saves!: SaveSystem;
   private flags: Record<string, unknown> = {};
-  private cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
   private keyE!: Phaser.Input.Keyboard.Key;
   private tileIdx = { grass: 0, grass_alt: 0, path: 1 };
   private worldId = "boot_valley";
@@ -54,9 +55,7 @@ export class HubScene extends Phaser.Scene {
     this.saves = new SaveSystem(world.id);
     this.runner = new DialogueRunner();
     this.interactions = new InteractionSystem(this, this.runner);
-    this.cursors = this.input.keyboard!.createCursorKeys();
-    this.keyE = this.input.keyboard!.addKey("E");
-    this.input.keyboard!.on("keydown-SPACE", () => EventBus.emit("input:attack"));
+    this.keyE = { justDown: false } as unknown as Phaser.Input.Keyboard.Key;
     this.challengeRegistry = { ch_gate_power: chGatePower as ChallengeDef };
     EventBus.on("world:effect", (p) => this.onWorldEffect(p));
     EventBus.on("ui:terminal:open", () => {
@@ -150,7 +149,9 @@ export class HubScene extends Phaser.Scene {
         resolveLines: () => {
           if (!dlg) return [];
           const tree = this.questEngine?.miraTree() ?? dlg.default_tree;
-          return dlg.trees[tree] ?? dlg.trees[dlg.default_tree] ?? [];
+          const keys = dlg.trees[tree] ?? dlg.trees[dlg.default_tree] ?? [];
+          const speaker = (dlg as unknown as { speaker?: string }).speaker ?? "Mira";
+          return keys.map((k) => ({ speaker, text: t(k) }));
         },
         onDialogueEnd: () => {
           const tree = this.questEngine?.miraTree() ?? "first_meeting";
@@ -175,7 +176,7 @@ export class HubScene extends Phaser.Scene {
         x: sx,
         y: sy,
         radius: (signDef.radius_tiles ?? 1.4) * TS,
-        lines: signDef.lines ?? [],
+        lines: (signDef.lines_keys ?? []).map((k: string) => ({ speaker: "Sign", text: t(k) })),
       });
     }
 
@@ -229,22 +230,25 @@ export class HubScene extends Phaser.Scene {
     const zoom = Math.min(2, Math.max(1, window.innerWidth / 720));
     this.cameras.main.setZoom(zoom);
 
+    this.cameras.main.fadeIn(500, 13, 27, 30);
+    EventBus.emit("world:entering", {});
     void this.spawnFromSave(world, TS);
   }
 
   private lastDir: { x: number; y: number } | null = null;
 
   private async onEnemyDefeated(p: unknown) {
-    const { name, xp, credits } = p as { name: string; xp: number; credits: number };
-    EventBus.emit("ui:toast", { text: `${name} dikalahkan! +${xp} XP · +${credits} Credits` });
-    EventBus.emit("wallet:refresh", {});
+    const { enemyId, name } = p as { enemyId: string; name: string; xp: number; credits: number };
     try {
       const supabase = createClient();
-      await supabase.rpc("grant_rewards", {
-        p_xp: xp,
-        p_credits: credits,
-        p_reason: "enemy_defeated",
+      const { data, error } = await supabase.rpc("record_enemy_kill", { p_enemy_id: enemyId });
+      if (error || !data) throw error;
+      const g = data as { xp_granted?: number; credits?: number };
+      EventBus.emit("ui:toast", {
+        text: t("combat.killed", { name, xp: g.xp_granted ?? 0, credits: g.credits ?? 0 }),
       });
+      EventBus.emit("wallet:refresh", {});
+      void import("@/lib/analytics").then((m) => m.track("enemy_defeated", { enemy: enemyId }));
     } catch {}
   }
 
@@ -261,7 +265,7 @@ export class HubScene extends Phaser.Scene {
       const sp = worlds[this.worldId].spawns["player_default"]!;
       this.player.setPosition(sp.x * 32 + 16, sp.y * 32 + 16);
       EventBus.emit("ui:hp", { hp: this.playerHp, max: this.playerMaxHp });
-      EventBus.emit("ui:toast", { text: "Kau pingsan… kembali ke titik aman." });
+      EventBus.emit("ui:toast", { text: t("combat.faint") });
     }
   }
 
@@ -341,25 +345,19 @@ export class HubScene extends Phaser.Scene {
   }
 
   update() {
-    if (!this.player || !this.cursors || this.player.x < 0) return;
+    if (!this.player || this.player.x < 0) return;
 
     const locked = this.runner.isActive || this.terminalOpen;
     if (!locked) {
-      let dx = touch.dx;
-      let dy = touch.dy;
-      if (this.cursors.left.isDown) dx = -1;
-      else if (this.cursors.right.isDown) dx = 1;
-      if (this.cursors.up.isDown) dy = -1;
-      else if (this.cursors.down.isDown) dy = 1;
+      const keys = keyboardState();
+      const dx = (keys.right ? 1 : 0) - (keys.left ? 1 : 0) || touch.dx;
+      const dy = (keys.down ? 1 : 0) - (keys.up ? 1 : 0) || touch.dy;
       const v = new Phaser.Math.Vector2(dx, dy);
       if (v.lengthSq() > 1) v.normalize();
       this.player.move(v.x, v.y);
       if (v.lengthSq() > 0) this.lastDir = { x: v.x, y: v.y };
-
-      if (Phaser.Input.Keyboard.JustDown(this.keyE)) EventBus.emit("input:interact");
     } else {
       this.player.move(0, 0);
-      if (Phaser.Input.Keyboard.JustDown(this.keyE)) EventBus.emit("input:interact");
     }
 
     this.interactions.update(this.player.x, this.player.y);

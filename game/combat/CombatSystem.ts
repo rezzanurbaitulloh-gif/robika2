@@ -1,6 +1,7 @@
 import * as Phaser from "phaser";
 import { EventBus } from "@/game/EventBus";
 import type { Enemy } from "@/game/entities/Enemy";
+import { playerDamage } from "@/lib/game/combatMath";
 
 export class CombatSystem {
   private scene: Phaser.Scene;
@@ -19,11 +20,6 @@ export class CombatSystem {
 
   get all() {
     return this.enemies;
-  }
-
-  /** damage derived from base power (D13) — server validates rewards separately */
-  static playerDamage(basePower: number): number {
-    return 8 + Math.floor(basePower * 0.8);
   }
 
   tryAttack(player: Phaser.Physics.Arcade.Sprite, dir: { x: number; y: number }, basePower: number): void {
@@ -51,7 +47,7 @@ export class CombatSystem {
       });
     }
 
-    const dmg = CombatSystem.playerDamage(basePower);
+    const dmg = playerDamage(basePower);
     let hitAny = false;
     for (const e of this.enemies) {
       if (e.isDead) continue;

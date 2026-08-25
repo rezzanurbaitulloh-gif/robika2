@@ -44,7 +44,7 @@ export class InteractionSystem {
     }
     if (best !== this.nearest) {
       this.nearest = best;
-      EventBus.emit("ui:prompt", best ? { label: best.kind === "npc" ? "Bicara" : "Periksa" } : null);
+      EventBus.emit("ui:prompt", best ? { label: best.kind === "npc" ? "talk" : "inspect" } : null);
     }
   }
 

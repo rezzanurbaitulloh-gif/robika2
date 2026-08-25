@@ -1,0 +1,130 @@
+import { SANDBOX_SOURCE, type RunResult } from "@/lib/coding/sandboxSource";
+import { track } from "@/lib/analytics";
+import { createClient } from "@/lib/supabase/client";
+
+/**
+ * D09 — latihan academy: sandbox klien (D07) + validasi ulang server
+ * (edge function validate-exercise) sebelum progres diakui.
+ */
+
+export type ExerciseBlock = {
+  type: "exercise";
+  instruction?: string;
+  fnName?: string;
+  starter?: string;
+  expect: { args: unknown[]; equals: unknown };
+};
+export type ExerciseResult = RunResult & { completed?: boolean };
+
+export async function runExercise(
+  lessonId: string,
+  skill: string,
+  xp: number,
+  code: string,
+  block: ExerciseBlock
+): Promise<ExerciseResult> {
+  // 1) sandbox klien (timeout, log cap, dsb. — D07)
+  const client = await runClient(code, block);
+  track("code_run", { lesson: lessonId, status: client.status });
+  if (client.status !== "success") return client;
+
+  // 2) validasi ulang di server (Deno isolate) — §62
+  try {
+    const supabase = createClient();
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/validate-exercise`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session?.access_token ?? ""}`,
+        },
+        body: JSON.stringify({
+          code,
+          fnName: block.fnName,
+          args: block.expect.args,
+          equals: block.expect.equals,
+        }),
+      }
+    );
+    const verdict = (await res.json()) as { valid?: boolean; error?: string };
+    if (!res.ok || !verdict.valid) {
+      return {
+        ...client,
+        status: "error",
+        error:
+          verdict.error === "fn_not_found"
+            ? `Fungsi ${block.fnName} tidak ditemukan.`
+            : "Server menolak hasil latihan.",
+      };
+    }
+  } catch {
+    return { ...client, status: "error", error: "Server tidak terjangkau — coba lagi saat online." };
+  }
+
+  // 3) akui penyelesaian: XP idempoten + mastery + analytics
+  await completeLesson(lessonId, skill, xp);
+  return { ...client, completed: true };
+}
+
+function runClient(code: string, block: ExerciseBlock): Promise<ExerciseResult> {
+  return new Promise((resolve) => {
+    const blob = new Blob([SANDBOX_SOURCE], { type: "text/javascript" });
+    const url = URL.createObjectURL(blob);
+    const worker = new Worker(url);
+    let settled = false;
+    const finish = (r: ExerciseResult) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      worker.terminate();
+      URL.revokeObjectURL(url);
+      resolve(r);
+    };
+    const timer = setTimeout(
+      () => finish({ status: "timeout", logs: [], effects: [], error: "Waktu habis (5s) — periksa loop-mu." }),
+      5000
+    );
+    worker.onmessage = (e: MessageEvent) => {
+      const raw = e.data as RunResult & { returned?: unknown };
+      const ok = JSON.stringify(raw.returned) === JSON.stringify(block.expect.equals);
+      finish({
+        status: ok ? "success" : "error",
+        logs: raw.logs ?? [],
+        effects: [],
+        error: ok ? undefined : `Hasil belum benar: ${JSON.stringify(raw.returned)}`,
+      });
+    };
+    worker.onerror = (e) => finish({ status: "error", logs: [], effects: [], error: e.message });
+    worker.postMessage({
+      code,
+      fnName: block.fnName,
+      maxLogs: 40,
+      expect: { args: block.expect.args, equals: block.expect.equals },
+    });
+  });
+}
+
+async function completeLesson(lessonId: string, skill: string, xp: number): Promise<void> {
+  try {
+    const supabase = createClient();
+    const { error } = await supabase.rpc("grant_rewards", {
+      p_xp: xp,
+      p_credits: 5,
+      p_reason: "lesson_completed",
+      p_idem: `lesson:${lessonId}`,
+    });
+    if (!error) {
+      await supabase.rpc("record_mastery", {
+        p_skill: skill,
+        p_delta: 25,
+        p_evidence: lessonId,
+      });
+      track("lesson_completed", { lesson: lessonId, skill });
+    }
+    localStorage.setItem(`robika.lesson.${lessonId}`, "1");
+  } catch {}
+}
