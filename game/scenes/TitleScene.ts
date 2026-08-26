@@ -82,7 +82,6 @@ export class TitleScene extends Scene {
     this.items = [
       { key: this.hasSave ? "title.continue" : "title.play", action: () => this.startGame() },
       { key: "title.academy", action: () => this.openPage("/academy") },
-      { key: "menu.codelab.locked", action: () => {}, locked: true },
       { key: "title.settings", action: () => this.openSettings() },
     ];
     this.renderMenu(width, height);

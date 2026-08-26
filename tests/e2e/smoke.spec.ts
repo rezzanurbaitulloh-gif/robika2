@@ -20,7 +20,7 @@ async function robustLogin(page: import("@playwright/test").Page, base: string) 
     page
       .waitForResponse((r: import("@playwright/test").Response) => r.url().includes("/auth/") && r.request().method() === "POST", { timeout: 20000 })
       .catch(() => null),
-    page.click("text=MASUK"),
+    page.getByRole("button", { name: "MASUK" }).click(),
   ]);
   await page.waitForURL("**/game**", { timeout: 90000 });
 }

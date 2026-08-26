@@ -12,6 +12,7 @@ function LoginForm() {
   const [busy, setBusy] = useState(false);
 
   async function submit(e: React.FormEvent<HTMLFormElement>) {
+    console.log('[LOGIN] submit terpanggil');
     e.preventDefault();
     setBusy(true);
     setError(null);
@@ -19,7 +20,9 @@ function LoginForm() {
     const email = String(fd.get("email") ?? "");
     const password = String(fd.get("password") ?? "");
     const supabase = createClient();
+    console.log('[LOGIN] memanggil signIn');
     const { error } = await supabase.auth.signInWithPassword({ email, password });
+    console.log('[LOGIN] signIn selesai, error:', error?.message ?? 'null');
     setBusy(false);
     if (error) return setError(error.message);
     router.push(next);
