@@ -73,6 +73,14 @@
     "gate_bridge": {
       "x": 13,
       "y": 8
+    },
+    "door_dungeon": {
+      "x": 15,
+      "y": 1
+    },
+    "door_base": {
+      "x": 14,
+      "y": 18
     }
   },
   "props": [

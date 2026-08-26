@@ -24,7 +24,7 @@
     "XX...,............",
     "XX.......B........",
     "XX................",
-    "XXXXXX.BXXXXXXXXXX",
+    "XXXXXXXX.XXXXXXXXX",
     "XXXXXXXXXXXXXXXXXX"
   ],
   "spawns": {
@@ -34,6 +34,10 @@
     },
     "from_hub": {
       "x": 8,
+      "y": 8
+    },
+    "door_hub": {
+      "x": 9,
       "y": 8
     }
   },

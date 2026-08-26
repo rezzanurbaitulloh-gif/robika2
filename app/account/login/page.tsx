@@ -8,15 +8,16 @@ function LoginForm() {
   const router = useRouter();
   const params = useSearchParams();
   const next = params.get("next") ?? "/game";
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
-  async function submit(e: React.FormEvent) {
+  async function submit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setBusy(true);
     setError(null);
+    const fd = new FormData(e.currentTarget);
+    const email = String(fd.get("email") ?? "");
+    const password = String(fd.get("password") ?? "");
     const supabase = createClient();
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     setBusy(false);
@@ -31,18 +32,18 @@ function LoginForm() {
         <h1 className="text-xl font-bold tracking-wide">Masuk ke Aetheria</h1>
         <input
           type="email"
+          name="email"
           required
           placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          defaultValue=""
           className="w-full bg-[#0d1b1e] border border-emerald-800 rounded px-3 py-2"
         />
         <input
           type="password"
+          name="password"
           required
           placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          defaultValue=""
           className="w-full bg-[#0d1b1e] border border-emerald-800 rounded px-3 py-2"
         />
         {error && <p className="text-red-400 text-sm">{error}</p>}

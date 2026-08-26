@@ -6,15 +6,16 @@ import { useRouter } from "next/navigation";
 
 export default function SetupPage() {
   const router = useRouter();
-  const [username, setUsername] = useState("");
   const [appearance, setAppearance] = useState("scout_teal");
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
-  async function submit(e: React.FormEvent) {
+  async function submit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setBusy(true);
     setError(null);
+    const fd = new FormData(e.currentTarget);
+    const username = String(fd.get("username") ?? "");
     try {
       const supabase = createClient();
       const {
@@ -46,8 +47,8 @@ export default function SetupPage() {
           pattern="[A-Za-z0-9_]+"
           title="3–24 huruf, angka, atau garis bawah"
           placeholder="Nama petualang"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          name="username"
+          defaultValue=""
           className="w-full bg-[#0d1b1e] border border-emerald-800 rounded px-3 py-2"
         />
         <fieldset className="space-y-2">

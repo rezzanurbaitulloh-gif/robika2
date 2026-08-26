@@ -1,14 +1,35 @@
 import { test, expect } from "@playwright/test";
 
+
+async function robustLogin(page: import("@playwright/test").Page, base: string) {
+  await page.goto(base + "/account/login", { waitUntil: "networkidle", timeout: 90000 });
+  // tunggu React hydrate (handler submit terpasang)
+  await page
+    .waitForFunction(
+      () => {
+        const b = document.querySelector("button");
+        return !!b && Object.keys(b).some((k) => k.startsWith("__react"));
+      },
+      { timeout: 45000 }
+    )
+    .catch(() => {});
+  await page.fill("input[type=email]", "dev@robika.game");
+  await page.fill("input[type=password]", "RobikaDev2026!");
+  const [resp] = await Promise.all([
+    page
+      .waitForResponse((r: import("@playwright/test").Response) => r.url().includes("/auth/") && r.request().method() === "POST", { timeout: 20000 })
+      .catch(() => null),
+    page.click("text=MASUK"),
+  ]);
+  await page.waitForURL("**/game**", { timeout: 90000 });
+}
+
 const BASE = process.env.E2E_URL ?? "http://localhost:3100";
 
 /** §76 gameplay suite — mekanik inti di browser sungguhan. */
 test.describe("gameplay core", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto(`${BASE}/account/login`);
-    await page.fill("input[type=email]", "dev@robika.game");
-    await page.fill("input[type=password]", "RobikaDev2026!");
-    await page.click("button");
+    await robustLogin(page, BASE);
     await page.waitForURL("**/game**", { timeout: 20_000 });
     await page.waitForFunction(
       () => {

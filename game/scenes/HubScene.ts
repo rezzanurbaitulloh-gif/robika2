@@ -42,6 +42,7 @@ export class HubScene extends Phaser.Scene {
   private invulnUntil = 0;
   private energy = 100;
   private energyMax = 100;
+  private dashUntil = 0;
   private lastDir: { x: number; y: number } | null = null;
   private questEngine?: QuestEngine;
   private terminalOpen = false;
@@ -453,10 +454,10 @@ export class HubScene extends Phaser.Scene {
     const dir = this.lastDir ?? { x: 0, y: 1 };
     const body = this.player.body as Phaser.Physics.Arcade.Body;
     body.setVelocity(dir.x * 420, dir.y * 420);
+    this.dashUntil = this.time.now + 220;
     this.invulnUntil = this.time.now + 450;
     this.player.setAlpha(0.55);
-    this.time.delayedCall(220, () => {
-      body.setVelocity(0, 0);
+    this.time.delayedCall(230, () => {
       this.player.setAlpha(1);
     });
   }
@@ -553,13 +554,17 @@ export class HubScene extends Phaser.Scene {
 
     const locked = this.runner.isActive || this.terminalOpen;
     if (!locked) {
-      const keys = keyboardState();
-      const dx = (keys.right ? 1 : 0) - (keys.left ? 1 : 0) || touch.dx;
-      const dy = (keys.down ? 1 : 0) - (keys.up ? 1 : 0) || touch.dy;
-      const v = new Phaser.Math.Vector2(dx, dy);
-      if (v.lengthSq() > 1) v.normalize();
-      this.player.move(v.x, v.y);
-      if (v.lengthSq() > 0) this.lastDir = { x: v.x, y: v.y };
+      if (this.time.now < this.dashUntil) {
+        // dash aktif: jangan override velocity
+      } else {
+        const keys = keyboardState();
+        const dx = (keys.right ? 1 : 0) - (keys.left ? 1 : 0) || touch.dx;
+        const dy = (keys.down ? 1 : 0) - (keys.up ? 1 : 0) || touch.dy;
+        const v = new Phaser.Math.Vector2(dx, dy);
+        if (v.lengthSq() > 1) v.normalize();
+        this.player.move(v.x, v.y);
+        if (v.lengthSq() > 0) this.lastDir = { x: v.x, y: v.y };
+      }
 
       if (Phaser.Input.Keyboard.JustDown(this.keyAttack)) EventBus.emit("input:attack");
     } else {

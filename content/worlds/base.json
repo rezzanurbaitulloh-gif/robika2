@@ -16,7 +16,7 @@
   "rows": [
     "XXXXXXXXXXXXXX",
     "XXXXXX.SXXXXXX",
-    "XX...T.....XXX",
+    "XX..........XX",
     "XX..........XX",
     "XX..........XX",
     "XX..........XX",
@@ -31,6 +31,18 @@
       "y": 7
     },
     "from_hub": {
+      "x": 6,
+      "y": 7
+    },
+    "shrine_base": {
+      "x": 7,
+      "y": 1
+    },
+    "academy_portal": {
+      "x": 5,
+      "y": 3
+    },
+    "door_hub": {
       "x": 6,
       "y": 7
     }

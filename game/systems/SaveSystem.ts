@@ -25,8 +25,11 @@ export class SaveSystem {
     this.worldId = worldId;
   }
 
-  async load():
-    Promise<{ position: { x: number; y: number }; state: Record<string, unknown> } | null> {
+  async load(): Promise<{
+    world_id?: string;
+    position: { x: number; y: number };
+    state: Record<string, unknown>;
+  } | null> {
     try {
       const supabase = createClient();
       const {
@@ -35,12 +38,16 @@ export class SaveSystem {
       if (!user) return null;
       const { data, error } = await supabase
         .from("saves")
-        .select("position, state")
+        .select("world_id, position, state")
         .eq("user_id", user.id)
         .eq("slot", 1)
         .maybeSingle();
       if (error || !data) return null;
-      return { position: data.position, state: data.state ?? {} };
+      return {
+        world_id: data.world_id,
+        position: data.position,
+        state: data.state ?? {},
+      };
     } catch {
       return null;
     }

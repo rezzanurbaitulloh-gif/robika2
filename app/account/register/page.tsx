@@ -8,16 +8,17 @@ function RegisterForm() {
   const router = useRouter();
   const params = useSearchParams();
   const next = params.get("next") ?? "/account/setup";
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [sent, setSent] = useState(false);
 
-  async function submit(e: React.FormEvent) {
+  async function submit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setBusy(true);
     setError(null);
+    const fd = new FormData(e.currentTarget);
+    const email = String(fd.get("email") ?? "");
+    const password = String(fd.get("password") ?? "");
     const supabase = createClient();
     const { data, error } = await supabase.auth.signUp({
       email,
@@ -46,8 +47,8 @@ function RegisterForm() {
               type="email"
               required
               placeholder="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              name="email"
+              defaultValue=""
               className="w-full bg-[#0d1b1e] border border-emerald-800 rounded px-3 py-2"
             />
             <input
@@ -55,8 +56,8 @@ function RegisterForm() {
               required
               minLength={8}
               placeholder="Password (min 8)"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              name="password"
+              defaultValue=""
               className="w-full bg-[#0d1b1e] border border-emerald-800 rounded px-3 py-2"
             />
             {error && <p className="text-red-400 text-sm">{error}</p>}
