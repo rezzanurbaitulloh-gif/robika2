@@ -16,6 +16,7 @@ async function robustLogin(page: import("@playwright/test").Page, base: string) 
     .catch(() => {});
   await page.fill("input[type=email]", "dev@robika.game");
   await page.fill("input[type=password]", "RobikaDev2026!");
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [resp] = await Promise.all([
     page
       .waitForResponse((r: import("@playwright/test").Response) => r.url().includes("/auth/") && r.request().method() === "POST", { timeout: 20000 })

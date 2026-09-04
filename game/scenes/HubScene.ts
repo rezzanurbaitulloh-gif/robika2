@@ -167,7 +167,6 @@ export class HubScene extends Phaser.Scene {
     // ---- NPCs ----
     for (const npcId of ["npc_engineer_mira", "npc_pak_dengklek", "npc_lulu"]) {
       const sp = world.spawns[npcId];
-      const tex = `npc_${npcId.split("_")[1]}_south`;
       if (!sp) continue;
       const textureKey =
         npcId === "npc_engineer_mira" ? "npc_mira_south" : npcId === "npc_pak_dengklek" ? "npc_dengklek_south" : "npc_lulu_south";

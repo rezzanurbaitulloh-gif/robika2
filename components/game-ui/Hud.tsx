@@ -10,7 +10,6 @@ export function Hud() {
   const [saved, setSaved] = useState(false);
   const [hp, setHp] = useState({ hp: 50, max: 50 });
   const [energy, setEnergy] = useState({ energy: 100, max: 100 });
-  const [gems, setGems] = useState(0);
 
   useEffect(() => {
     let t: ReturnType<typeof setTimeout>;
@@ -25,14 +24,10 @@ export function Hud() {
     const offEn = EventBus.on("ui:energy", (p) =>
       setEnergy(p as { energy: number; max: number })
     );
-    const offWallet = EventBus.on("wallet:data", (p) =>
-      setGems((p as { gems?: number }).gems ?? 0)
-    );
     return () => {
       off();
       offHp();
       offEn();
-      offWallet();
       clearTimeout(t);
     };
   }, []);

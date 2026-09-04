@@ -17,7 +17,6 @@ export default function WorkspacePage({ params }: { params: Promise<Params> }) {
   const [files, setFiles] = useState<ProjectFile[]>([]);
   const [active, setActive] = useState(0);
   const [projectName, setProjectName] = useState("");
-  const [runtime, setRuntime] = useState("javascript");
   const [output, setOutput] = useState<string[]>([]);
   const [running, setRunning] = useState(false);
   const [dirty, setDirty] = useState(false);
@@ -34,7 +33,6 @@ export default function WorkspacePage({ params }: { params: Promise<Params> }) {
       void loadProject(projectId)
         .then(({ project, files }) => {
           setProjectName(project.name);
-          setRuntime(project.runtime);
           setFiles(files.length ? files : [{ path: "main.js", content: "" }]);
         })
         .catch((e) => setErr(String(e.message ?? e)));
