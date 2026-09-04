@@ -84,6 +84,7 @@ export class TitleScene extends Scene {
       { key: "title.academy", action: () => this.openPage("/academy") },
       { key: "title.vault", action: () => this.openPage("/vault") },
       { key: "title.shop", action: () => this.openPage("/shop") },
+      { key: "title.mentor", action: () => this.openPage("/mentor") },
       { key: "title.gacha", action: () => this.openPage("/gacha") },
       { key: "title.settings", action: () => this.openSettings() },
     ];
@@ -109,6 +110,7 @@ export class TitleScene extends Scene {
       { key: "menu.codelab.locked", action: () => {}, locked: !flags["terminal_used"] },
       { key: "title.vault", action: () => this.openPage("/vault") },
       { key: "title.shop", action: () => this.openPage("/shop") },
+      { key: "title.mentor", action: () => this.openPage("/mentor") },
       { key: "title.gacha", action: () => this.openPage("/gacha") },
       { key: "title.settings", action: () => this.openSettings() },
     ];
