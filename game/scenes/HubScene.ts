@@ -441,6 +441,13 @@ export class HubScene extends Phaser.Scene {
         text: t("combat.killed", { name, xp: g.xp_granted ?? 0, credits: g.credits ?? 0 }),
       });
       EventBus.emit("wallet:refresh", {});
+      if (enemyId === "enemy_glitch_warden") {
+        void import("@/lib/supabase/client").then(({ createClient }) =>
+          createClient()
+            .rpc("grant_achievement", { p_achievement_id: "first_boss" })
+            .then(() => {})
+        );
+      }
       void import("@/lib/analytics").then((m) => m.track("enemy_defeated", { enemy: enemyId }));
     } catch {}
   }

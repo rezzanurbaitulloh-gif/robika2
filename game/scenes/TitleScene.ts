@@ -82,6 +82,7 @@ export class TitleScene extends Scene {
     this.items = [
       { key: this.hasSave ? "title.continue" : "title.play", action: () => this.startGame() },
       { key: "title.academy", action: () => this.openPage("/academy") },
+      { key: "title.vault", action: () => this.openPage("/vault") },
       { key: "title.settings", action: () => this.openSettings() },
     ];
     this.renderMenu(width, height);
@@ -104,6 +105,7 @@ export class TitleScene extends Scene {
       { key: this.hasSave ? "title.continue" : "title.play", action: () => this.startGame() },
       { key: "title.academy", action: () => this.openPage("/academy") },
       { key: "menu.codelab.locked", action: () => {}, locked: !flags["terminal_used"] },
+      { key: "title.vault", action: () => this.openPage("/vault") },
       { key: "title.settings", action: () => this.openSettings() },
     ];
     this.renderMenu(width, height);

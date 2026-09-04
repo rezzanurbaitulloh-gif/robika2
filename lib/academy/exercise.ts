@@ -125,6 +125,19 @@ async function completeLesson(
     });
     if (error) return null;
     localStorage.setItem(`robika.lesson.${lessonId}`, "1");
+    // S26: achievement
+    try { await supabase.rpc("grant_achievement", { p_achievement_id: "first_program" }); } catch {}
+    // loop_master bila sudah 3 lesson js_dasar_kode
+    try {
+      const r = await supabase
+        .from("lesson_completions")
+        .select("id", { count: "exact", head: true })
+        .eq("course_id", courseId);
+      const count = r.count ?? 0;
+      if (count >= 3) {
+        try { await supabase.rpc("grant_achievement", { p_achievement_id: "loop_master" }); } catch {}
+      }
+    } catch {}
     return data as { certificate?: boolean };
   } catch {
     return null;

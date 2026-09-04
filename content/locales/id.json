@@ -123,5 +123,7 @@
   "support.editor": "Editor",
   "support.execution": "Eksekusi",
   "support.offline": "Offline",
-  "door.academy.enter": "Terminal Akademi. [E] Belajar"
+  "door.academy.enter": "Terminal Akademi. [E] Belajar",
+  "title.vault": "VAULT",
+  "vault.subtitle": "Koleksi permanen — semua yang telah kamu buka."
 }
