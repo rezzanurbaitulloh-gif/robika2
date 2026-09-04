@@ -125,5 +125,6 @@
   "support.offline": "Offline",
   "door.academy.enter": "Academy Terminal. [E] Study",
   "title.vault": "VAULT",
-  "vault.subtitle": "Permanent collection — everything you unlocked."
+  "vault.subtitle": "Permanent collection — everything you unlocked.",
+  "title.shop": "SHOP"
 }
