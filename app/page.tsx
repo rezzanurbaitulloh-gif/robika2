@@ -73,8 +73,8 @@ export default function TitlePage() {
         </div>
       </div>
 
-      <footer className="absolute bottom-4 font-mono text-[10px] tracking-widest text-emerald-800">
-        PHASE 2 · LEMBAH BOOT · v0.2
+      <footer className="absolute bottom-4 font-mono text-[10px] tracking-widest text-emerald-800 text-center">
+        © 2026 portoja. All rights reserved. · PHASE 2 · LEMBAH BOOT · v0.2
       </footer>
     </main>
   );
