@@ -11,6 +11,7 @@ export default function CodelabPage() {
   const [projects, setProjects] = useState<ProjectRow[] | null>(null);
   const nameRef = useRef<HTMLInputElement>(null);
   const [busy, setBusy] = useState(false);
+  const [template, setTemplate] = useState<"js" | "web">("js");
   const [createErr, setCreateErr] = useState<string | null>(null);
 
   useEffect(() => {
@@ -24,7 +25,7 @@ export default function CodelabPage() {
     setBusy(true);
     setCreateErr(null);
     try {
-      const id = await createProject(name);
+      const id = await createProject(name, template === "web" ? "web" : "javascript");
       router.push(`/codelab/${id}`);
     } catch (e) {
       setCreateErr(String((e as Error).message ?? e).slice(0, 200));
@@ -49,7 +50,12 @@ export default function CodelabPage() {
           Bengkel proyek sungguhan: file, editor, run, preview, riwayat versi.
         </p>
 
-        <div className="mt-6 flex gap-2">
+        <div className="mt-4 flex gap-2 text-[11px]">
+          <button onClick={() => setTemplate("js")} className={`rounded px-3 py-1.5 ${template === "js" ? "bg-emerald-700 text-white" : "bg-black/40 text-emerald-400 ring-1 ring-emerald-900"}`}>JavaScript</button>
+          <button onClick={() => setTemplate("web")} className={`rounded px-3 py-1.5 ${template === "web" ? "bg-emerald-700 text-white" : "bg-black/40 text-emerald-400 ring-1 ring-emerald-900"}`}>Website (HTML/CSS/JS)</button>
+          <span className="ml-2 self-center text-emerald-700">{template === "web" ? "→ index.html + style.css + script.js" : "→ main.js"}</span>
+        </div>
+        <div className="mt-3 flex gap-2">
           <input
             ref={nameRef}
             onKeyDown={(e) => { if (e.key === "Enter") void onCreate(); }}

@@ -17,6 +17,7 @@ export default function WorkspacePage({ params }: { params: Promise<Params> }) {
   const [files, setFiles] = useState<ProjectFile[]>([]);
   const [active, setActive] = useState(0);
   const [projectName, setProjectName] = useState("");
+  const [runtime, setRuntime] = useState("javascript");
   const [output, setOutput] = useState<string[]>([]);
   const [running, setRunning] = useState(false);
   const [dirty, setDirty] = useState(false);
@@ -33,6 +34,7 @@ export default function WorkspacePage({ params }: { params: Promise<Params> }) {
       void loadProject(projectId)
         .then(({ project, files }) => {
           setProjectName(project.name);
+          setRuntime(project.runtime);
           setFiles(files.length ? files : [{ path: "main.js", content: "" }]);
         })
         .catch((e) => setErr(String(e.message ?? e)));
@@ -150,8 +152,6 @@ export default function WorkspacePage({ params }: { params: Promise<Params> }) {
             « CodeLab
           </Link>
           <div className="flex items-center gap-2 text-[11px]">
-            {dirty && <span className="text-amber-400">● belum disimpan</span>}
-            {!dirty && savedAt && <span className="text-emerald-500">tersimpan {savedAt}</span>}
             <button
               onClick={() => void doSave(false)}
               disabled={saving}
@@ -178,6 +178,11 @@ export default function WorkspacePage({ params }: { params: Promise<Params> }) {
         <h1 className="mt-2 text-xl font-bold text-emerald-300">{projectName || "…"}</h1>
 
         {err && <p className="mt-2 rounded bg-red-950/60 p-2 text-xs text-red-300">{err}</p>}
+
+        <div className="mt-2 flex items-center gap-2 text-[11px]">
+          <span className="rounded bg-black/40 px-2 py-1 text-emerald-600">runtime: {runtime}</span>
+          <span className={dirty ? "text-amber-400" : "text-emerald-700"}>{dirty ? "● belum disimpan" : savedAt ? `tersimpan ${savedAt}` : ""}</span>
+        </div>
 
         {/* tabs file */}
         <div className="mt-3 flex flex-wrap gap-1">

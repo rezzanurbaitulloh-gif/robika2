@@ -22,12 +22,20 @@ export interface VersionRow {
   created_at: string;
 }
 
-const DEFAULT_FILES = (name: string): ProjectFile[] => [
+const DEFAULT_FILES_WEB = (name: string): ProjectFile[] => [
+  { path: "index.html", content: `<!doctype html>\n<html><head><meta charset="utf-8"><title>${name}</title><link rel="stylesheet" href="style.css"></head><body><h1>${name}</h1><p>Edit HTML/CSS/JS lalu RUN.</p><script src="script.js"></\/script></body></html>` },
+  { path: "style.css", content: `body { font-family: monospace; background: #0d1b1e; color: #34d399; padding: 24px; }\nh1 { color: #a7f3d0; }` },
+  { path: "script.js", content: `console.log("Halo dari ${name}!");` },
+];
+const DEFAULT_FILES = (name: string, runtime?: string): ProjectFile[] => {
+  if (runtime === "web") return DEFAULT_FILES_WEB(name);
+  return [
   {
     path: "main.js",
     content: `// ${name}\n// Tekan RUN untuk menjalankan.\n\nconsole.log("Halo dari ${name}!");\n`,
   },
-];
+  ];
+};
 
 export async function listProjects(): Promise<ProjectRow[]> {
   const supabase = createClient();
@@ -47,7 +55,7 @@ export async function createProject(name: string, runtime = "javascript"): Promi
     .select("id")
     .single();
   if (error) throw error;
-  const files = DEFAULT_FILES(name);
+  const files = DEFAULT_FILES(name, runtime);
   await supabase.from("project_files").insert(files.map((f) => ({ ...f, project_id: data.id })));
   await supabase.from("project_versions").insert({
     project_id: data.id,
