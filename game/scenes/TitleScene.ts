@@ -78,19 +78,14 @@ export class TitleScene extends Scene {
   }
 
   private async buildMenu(width: number, height: number) {
-    // item default sinkron — menu selalu bisa diaktifkan sejak frame pertama
+    // RPG-like progression: new player sees only core, rest unlocks contextually
     this.items = [
       { key: this.hasSave ? "title.continue" : "title.play", action: () => this.startGame() },
       { key: "title.academy", action: () => this.openPage("/academy") },
-      { key: "title.vault", action: () => this.openPage("/vault") },
-      { key: "title.shop", action: () => this.openPage("/shop") },
-      { key: "title.mentor", action: () => this.openPage("/mentor") },
-      { key: "title.gacha", action: () => this.openPage("/gacha") },
       { key: "title.settings", action: () => this.openSettings() },
     ];
     this.renderMenu(width, height);
 
-    // §menu kontekstual: item terkunci muncul sebagai progresi, bukan dashboard
     let flags: Record<string, unknown> = {};
     try {
       const { createClient } = await import("@/lib/supabase/client");
@@ -104,16 +99,26 @@ export class TitleScene extends Scene {
       }
     } catch {}
 
-    this.items = [
+    const unlocked: Array<{ key: string; action: () => void; locked?: boolean }> = [
       { key: this.hasSave ? "title.continue" : "title.play", action: () => this.startGame() },
       { key: "title.academy", action: () => this.openPage("/academy") },
-      { key: "menu.codelab.locked", action: () => {}, locked: !flags["terminal_used"] },
-      { key: "title.vault", action: () => this.openPage("/vault") },
-      { key: "title.shop", action: () => this.openPage("/shop") },
-      { key: "title.mentor", action: () => this.openPage("/mentor") },
-      { key: "title.gacha", action: () => this.openPage("/gacha") },
-      { key: "title.settings", action: () => this.openSettings() },
     ];
+    // Contextual unlocks — UI is progression
+    if (flags["terminal_used"]) {
+      unlocked.push({ key: "title.codelab", action: () => this.openPage("/codelab") });
+    } else {
+      unlocked.push({ key: "menu.codelab.locked", action: () => {}, locked: true });
+    }
+    // Vault/Shop/Gacha unlock after first quest or after finding vault/shop
+    const hasProgress = flags["met_mira"] || flags["gate_opened"] || flags["terminal_used"];
+    if (hasProgress) {
+      unlocked.push({ key: "title.vault", action: () => this.openPage("/vault") });
+      unlocked.push({ key: "title.shop", action: () => this.openPage("/shop") });
+      unlocked.push({ key: "title.gacha", action: () => this.openPage("/gacha") });
+      unlocked.push({ key: "title.mentor", action: () => this.openPage("/mentor") });
+    }
+    unlocked.push({ key: "title.settings", action: () => this.openSettings() });
+    this.items = unlocked;
     this.renderMenu(width, height);
   }
 

@@ -141,27 +141,52 @@ export class HubScene extends Phaser.Scene {
           continue;
         }
         if (kind === "tree" && this.textures.exists("prop_tree")) {
-          const scale = 0.9 + ((x * 7 + y * 13) % 5) * 0.06; // variasi ukuran halus
+          const scale = 0.9 + ((x * 7 + y * 13) % 5) * 0.06;
           this.add.image(px, py + 8, "prop_tree").setOrigin(0.5, 1).setDepth(py + 16).setScale(scale);
         }
-        const rect = this.add.rectangle(px, py - 4, TS - 6, 20);
+        const rect = this.add.rectangle(px, py - 2, 22, 18);
         rect.setVisible(false);
         solids.add(rect);
       }
     }
 
-    // ---- Props ----
+    // ---- Props ---- with proper hitbox per type
     for (const prop of world.props ?? []) {
       if (!this.textures.exists(prop.ref)) continue;
       const px = prop.x * TS + TS / 2;
       const py = prop.y * TS + TS / 2;
-      const img = this.add.image(px, py + 10, prop.ref).setOrigin(0.5, 1).setDepth(py + 14);
+      const isHut = prop.ref === "prop_hut";
+      const img = this.add.image(px, py + (isHut ? 14 : 10), prop.ref).setOrigin(0.5, 1).setDepth(py + 14);
       if (prop.solid) {
-        const rect = this.add.rectangle(px, py, TS - 4, TS - 8) as Phaser.GameObjects.Rectangle;
+        const w = isHut ? 72 : 22;
+        const h = isHut ? 36 : 18;
+        const rect = this.add.rectangle(px, py + (isHut ? 8 : 0), w, h) as Phaser.GameObjects.Rectangle;
         rect.setVisible(false);
         solids.add(rect);
       }
       void img;
+    }
+
+    // ---- Ground variation: small flora on grass_alt patches (breaks uniform grid)
+    if (this.textures.exists("prop_flower")) {
+      for (let y = 0; y < rows.length; y++) {
+        for (let x = 0; x < rows[y].length; x++) {
+          if (rows[y][x] !== ",") continue;
+          // 12% chance per grass_alt cell — seeded by position for stability
+          const seed = (x * 73856093) ^ (y * 19349663);
+          if ((seed & 0xff) > 225) {
+            const fx = x * TS + TS / 2 + ((seed >> 8) & 7) - 3;
+            const fy = y * TS + TS / 2 + ((seed >> 12) & 7) - 3;
+            const scale = 0.55 + ((seed >> 16) & 0xff) / 900;
+            this.add
+              .image(fx, fy, "prop_flower")
+              .setOrigin(0.5, 1)
+              .setDepth(fy + 2)
+              .setScale(scale)
+              .setAlpha(0.9);
+          }
+        }
+      }
     }
 
     // ---- NPCs ----
@@ -180,15 +205,36 @@ export class HubScene extends Phaser.Scene {
       } else {
         this.tweens.add({ targets: img, y: "-=1.5", duration: 900 + Math.random() * 400, yoyo: true, repeat: -1, ease: "Sine.easeInOut" });
       }
+      // Invisible NPC collider so player can't walk through
+      const npcBody = this.add.rectangle(nx, ny + 6, 20, 16) as Phaser.GameObjects.Rectangle;
+      npcBody.setVisible(false);
+      solids.add(npcBody);
+      // Dynamic depth: keep NPC sorted by Y as it wanders
+      this.time.addEvent({
+        delay: 100,
+        loop: true,
+        callback: () => {
+          if (!img.active) return;
+          img.setDepth(img.y);
+          npcBody.setPosition(img.x, img.y + 6);
+        },
+      });
       // S7.3 — NPC wander ringan dalam radius rumah
       this.time.addEvent({
         delay: 2600 + Math.random() * 1800,
         loop: true,
         callback: () => {
-          if (this.transitioning) return;
+          if (this.transitioning || !img.active) return;
           const tx = nx + Phaser.Math.Between(-1, 1) * TS;
           const ty = ny + Phaser.Math.Between(-1, 1) * TS;
-          this.tweens.add({ targets: img, x: tx, y: ty, duration: 900, ease: "Sine.easeInOut" });
+          this.tweens.add({
+            targets: img,
+            x: tx,
+            y: ty,
+            duration: 900,
+            ease: "Sine.easeInOut",
+            onUpdate: () => img.setDepth(img.y),
+          });
         },
       });
 
@@ -316,7 +362,6 @@ export class HubScene extends Phaser.Scene {
     // ---- Player ----
     this.player = new Player(this, -999, -999);
     this.physics.add.collider(this.player, solids);
-    this.physics.add.collider(this.player, this.player);
 
     // ---- Camera ----
     this.cameras.main.setBounds(0, 0, mapW, mapH);

@@ -12,8 +12,8 @@ export class Player extends Physics.Arcade.Sprite {
     super(scene, x, y, "player_south");
     scene.add.existing(this);
     scene.physics.add.existing(this);
-    this.body!.setSize(20, 16).setOffset(14, 30);
-    this.setDepth(10);
+    this.body!.setSize(18, 14).setOffset(15, 32);
+    this.setDepth(y);
     this.setName("player");
 
     for (const d of ["south", "north", "east", "west"] as Dir[]) {
@@ -34,6 +34,7 @@ export class Player extends Physics.Arcade.Sprite {
   move(dx: number, dy: number) {
     const body = this.body as Phaser.Physics.Arcade.Body;
     body.setVelocity(dx * this.speed, dy * this.speed);
+    this.setDepth(this.y);
 
     if (dx === 0 && dy === 0) {
       if (this.walkAnims[this.dir] && this.anims.isPlaying) this.playIdle();

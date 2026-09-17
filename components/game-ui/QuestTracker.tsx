@@ -24,23 +24,30 @@ export function QuestTracker() {
   if (!quest || quest.state === "not_started" || quest.state === "completed") return null;
 
   return (
-    <div className="pointer-events-none absolute left-3 top-12 z-20 w-56 rounded border border-emerald-800 bg-black/65 p-2">
-      <p className="font-mono text-[10px] uppercase tracking-widest text-emerald-600">{t("quest.tracker")}</p>
-      <p className="font-mono text-xs font-bold text-emerald-200">{quest.title}</p>
-      <ul className="mt-1 space-y-0.5">
+    <div className="pointer-events-none absolute left-2 top-[4.5rem] z-20 w-[14.5rem] rounded-xl border border-emerald-800/50 bg-black/70 p-3 shadow-[0_4px_24px_rgba(0,0,0,0.5)] ring-1 ring-white/5 backdrop-blur-md sm:left-3 sm:w-60">
+      <p className="font-mono text-[10px] font-bold uppercase tracking-[0.14em] text-emerald-500/80">{t("quest.tracker")}</p>
+      <p className="mt-1 text-balance font-mono text-xs font-bold leading-snug text-emerald-100">{quest.title}</p>
+      <ul className="mt-2 space-y-1">
         {quest.objectives.map((o) => (
           <li
             key={o.id}
-            className={`font-mono text-[11px] leading-snug ${
-              o.done ? "text-emerald-500 line-through" : "text-emerald-300"
+            className={`flex gap-1.5 font-mono text-[11px] leading-snug transition-colors duration-200 ${
+              o.done ? "text-emerald-400/60 line-through" : "text-emerald-200"
             }`}
           >
-            {o.done ? "☑" : "☐"} {o.text}
+            <span className={`mt-0.5 inline-flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-[4px] text-[9px] ${
+              o.done ? "bg-emerald-500/20 text-emerald-400 ring-1 ring-emerald-500/30" : "bg-white/5 text-emerald-600 ring-1 ring-white/10"
+            }`}>
+              {o.done ? "✓" : "○"}
+            </span>
+            <span className="flex-1 text-pretty">{o.text}</span>
           </li>
         ))}
       </ul>
       {quest.state === "ready_turn_in" && (
-        <p className="mt-1 animate-pulse font-mono text-[10px] text-amber-300">{t("quest.return")}</p>
+        <p className="mt-2.5 rounded-lg bg-amber-500/10 px-2 py-1.5 text-center font-mono text-[10px] font-bold tracking-wide text-amber-300 ring-1 ring-amber-500/20">
+          {t("quest.return")}
+        </p>
       )}
     </div>
   );
@@ -93,11 +100,11 @@ export function WalletChip() {
 
   if (!wallet) return null;
   return (
-    <div className="pointer-events-none absolute right-3 top-12 z-20 flex gap-2">
-      <span className="rounded bg-black/65 px-2 py-1 font-mono text-[11px] text-amber-300">
+    <div className="pointer-events-none absolute right-2 top-[4.5rem] z-20 flex gap-1.5 sm:right-3">
+      <span className="rounded-full bg-black/70 px-2.5 py-1 font-mono text-[11px] font-medium tabular-nums text-amber-300 shadow-[0_2px_12px_rgba(0,0,0,0.4)] ring-1 ring-white/10 backdrop-blur-sm">
         ◈ {wallet.credits}
       </span>
-      <span className="rounded bg-black/65 px-2 py-1 font-mono text-[11px] text-emerald-300">
+      <span className="rounded-full bg-black/70 px-2.5 py-1 font-mono text-[11px] font-medium tabular-nums text-emerald-300 shadow-[0_2px_12px_rgba(0,0,0,0.4)] ring-1 ring-white/10 backdrop-blur-sm">
         Lv {wallet.level} · {wallet.xp} XP
       </span>
     </div>

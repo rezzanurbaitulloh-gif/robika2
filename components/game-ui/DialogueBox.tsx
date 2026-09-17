@@ -87,22 +87,22 @@ export function DialogueBox() {
   if (!line) return null;
 
   return (
-    <div className="absolute inset-x-0 bottom-0 z-30 flex justify-center p-3" onClick={advance}>
-      <div className="flex w-full max-w-2xl gap-3 rounded-lg border border-emerald-700 bg-[#0d1b1e]/95 p-4 shadow-xl">
+    <div className="absolute inset-x-0 bottom-0 z-30 flex justify-center p-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))]" onClick={advance}>
+      <div className="flex w-full max-w-2xl gap-3 rounded-xl border border-emerald-700/60 bg-[#0d1b1e]/95 p-4 shadow-[0_8px_32px_rgba(0,0,0,0.6),0_0_0_1px_rgba(52,211,153,0.15)] backdrop-blur-md">
         {portrait && (
           /* eslint-disable-next-line @next/next/no-img-element */
           <img
             src={`/assets/portraits/${portrait}.png`}
             alt={line.speaker}
-            className="h-16 w-16 shrink-0 rounded border border-emerald-800 bg-[#12262b] object-cover"
+            className="h-16 w-16 shrink-0 rounded-xl border border-emerald-800/50 bg-[#12262b] object-cover shadow-inner outline outline-1 -outline-offset-1 outline-white/10"
             style={{ imageRendering: "pixelated" }}
           />
         )}
         <div className="min-w-0 flex-1">
-          <p className="mb-1 font-mono text-xs font-bold uppercase tracking-widest text-emerald-400">
+          <p className="mb-1.5 font-mono text-xs font-bold uppercase tracking-widest text-emerald-400">
             {line.speaker}
           </p>
-          <p className="font-mono text-sm leading-relaxed text-emerald-50">
+          <p className="text-balance font-mono text-[13px] leading-relaxed text-emerald-50 sm:text-sm">
             {shown}
             {!done && <span className="animate-pulse">▌</span>}
             {done && !choices && <span className="ml-2 animate-pulse text-emerald-500">▼</span>}
@@ -122,7 +122,7 @@ export function DialogueBox() {
                     EventBus.emit("ui:dialogue:choicePicked", opt);
                     EventBus.emit("ui:dialogue:applyChoice", opt);
                   }}
-                  className="block w-full rounded bg-black/40 px-3 py-2 text-left font-mono text-xs text-emerald-200 ring-1 ring-emerald-800 hover:ring-emerald-400"
+                  className="block w-full rounded-xl bg-black/40 px-3.5 py-2.5 text-left font-mono text-xs leading-relaxed text-emerald-200 shadow-sm ring-1 ring-emerald-800/60 transition-all duration-150 hover:bg-emerald-900/30 hover:ring-emerald-500/50 active:scale-[0.98]"
                 >
                   ▸ {t(opt.text)}
                 </button>
