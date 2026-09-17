@@ -213,6 +213,23 @@ export class HubScene extends Phaser.Scene {
       }
     }
 
+    // Stone wall elevation (north edge) — creates sense of height/landmark
+    if (world.id === "boot_valley") {
+      for (let x = 0; x < 30; x++) {
+        if (x < 12 || x > 18) {
+          const wx = x * TS + TS / 2;
+          const wy = 1 * TS + TS / 2 - 8;
+          const wall = this.add.rectangle(wx, wy, 32, 10, 0x3a3f4a);
+          wall.setDepth(wy + 20);
+          wall.setAlpha(0.9);
+          // top highlight
+          const hl = this.add.rectangle(wx, wy - 3, 30, 2, 0x5a6070);
+          hl.setDepth(wy + 21);
+          hl.setAlpha(0.6);
+        }
+      }
+    }
+
     // Bridge railings (visual only, reinforces bridge identity)
     if (world.id === "boot_valley") {
       for (let by of [7.5, 9.5]) {
@@ -223,6 +240,21 @@ export class HubScene extends Phaser.Scene {
           rail.setDepth(rpy);
           rail.setAlpha(0.9);
         }
+      }
+    }
+
+    // Barrel props near hut (density)
+    if (world.id === "boot_valley" && this.textures.exists("prop_rock")) {
+      const barrels = [[6, 11, 0.9], [7, 11, 1.1]];
+      for (const [bx, by, sc] of barrels) {
+        const bpx = bx * TS + TS / 2;
+        const bpy = by * TS + TS / 2;
+        const barrel = this.add.rectangle(bpx, bpy + 4, 14, 10, 0x6b4a35);
+        barrel.setDepth(bpy + 10);
+        const hoop = this.add.rectangle(bpx, bpy + 1, 14, 2, 0x3a2a1a);
+        hoop.setDepth(bpy + 11);
+        const lid = this.add.rectangle(bpx, bpy - 2, 12, 3, 0x8b6a45);
+        lid.setDepth(bpy + 12);
       }
     }
 
