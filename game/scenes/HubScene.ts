@@ -106,13 +106,18 @@ export class HubScene extends Phaser.Scene {
         if (layer) {
           if (kind === "path") layer.putTileAt(this.pathTileAt(rows, x, y), x, y);
           else if (kind === "water") layer.putTileAt(this.waterTileAt(world, rows, x, y), x, y);
-          else if (kind === "grass_alt") layer.putTileAt(this.tileIdx.grass_alt ?? this.tileIdx.grass, x, y);
-          else if (kind === "stone_alt") layer.putTileAt(this.tileIdx.stone_alt ?? this.tileIdx.grass, x, y);
+          else if (kind === "grass_alt") {
+            layer.putTileAt(this.tileIdx.grass_alt ?? this.tileIdx.grass, x, y);
+            // subtle pebble on grass_alt for texture break
+            if ((x * 17 + y * 31) % 7 === 0) {
+              const pebble = this.add.rectangle(px + ((x * 13) % 10) - 5, py + ((y * 19) % 10) - 5, 2, 2, 0x1a3a2a);
+              pebble.setDepth(-5);
+              pebble.setAlpha(0.25);
+            }
+          } else if (kind === "stone_alt") layer.putTileAt(this.tileIdx.stone_alt ?? this.tileIdx.grass, x, y);
           else if (kind === "grass" || kind === "stone") layer.putTileAt(this.tileIdx.grass, x, y);
-          // bridge/door/gate: gambar path dasar di bawahnya
           else if (kind === "bridge" || kind === "gate") layer.putTileAt(this.tileIdx.path, x, y);
           else if (kind === "door_dungeon" || kind === "door_base" || kind === "door_hub") layer.putTileAt(this.tileIdx.path, x, y);
-          // fallback: semua sel non-void dapat dasar (rumput/batu) agar tak tembus hitam
           else if (kind !== "void") layer.putTileAt(this.tileIdx.grass, x, y);
         }
 
@@ -185,6 +190,38 @@ export class HubScene extends Phaser.Scene {
               .setScale(scale)
               .setAlpha(0.9);
           }
+        }
+      }
+    }
+
+    // ---- Fence posts near hut (hand-crafted feel, no extra asset) ----
+    if (world.id === "boot_valley" && this.textures.exists("prop_rock")) {
+      const fencePositions = [
+        [4, 11], [6, 11], [4, 14], [6, 14], // around hut
+      ];
+      for (const [fx, fy] of fencePositions) {
+        const fpx = fx * TS + TS / 2;
+        const fpy = fy * TS + TS / 2;
+        const post = this.add.rectangle(fpx, fpy + 4, 4, 12, 0x5a3a32);
+        post.setDepth(fpy);
+        post.setAlpha(0.85);
+        const rail = this.add.rectangle(fpx + 8, fpy, 16, 3, 0x6b4a35);
+        rail.setDepth(fpy + 1);
+        const rect = this.add.rectangle(fpx, fpy, 12, 12) as Phaser.GameObjects.Rectangle;
+        rect.setVisible(false);
+        solids.add(rect);
+      }
+    }
+
+    // Bridge railings (visual only, reinforces bridge identity)
+    if (world.id === "boot_valley") {
+      for (let by of [7.5, 9.5]) {
+        for (let bx = 12; bx <= 15; bx++) {
+          const rpx = bx * TS + TS/2;
+          const rpy = by * TS + TS/2;
+          const rail = this.add.rectangle(rpx, rpy, 28, 3, 0x6b4a35);
+          rail.setDepth(rpy);
+          rail.setAlpha(0.9);
         }
       }
     }
