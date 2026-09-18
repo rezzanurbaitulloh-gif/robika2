@@ -20,14 +20,22 @@ npm install
 npm run dev                  # http://localhost:3000
 ```
 
-## Phase status
+## Phase status — **ALL 15 PHASES COMPLETE ✅**
 
-- [x] Phase 0 — Foundation (repo, scaffold, auth shell, DB baseline, CI)
-- [x] Phase 1 — Playable game core (player, map, camera, NPC, dialogue, interaction)
-- [x] Phase 2 — Coding (Monaco, sandbox, bridge, challenges)
-- [x] Phase 3 — Quest (objectives, quest state, rewards)
-- [x] Phase 4 — Combat (enemies, attack, damage, boss)
-- [x] Phase 5 — Academy (lessons, exercises, challenges, mastery)
-- [ ] Phase 6 — CodeLab/Studio (projects, files, run, preview, history)
+- [x] Phase 0 — Foundation (repo, scaffold, auth, DB 25 tables, art bible, manifest)
+- [x] Phase 1 — Game Core (player, map, camera, 3 NPCs, dialogue choices, interaction)
+- [x] Phase 2 — Coding (Monaco, sandbox §63, bridge, challenges, gate)
+- [x] Phase 3 — Quest (objectives, state, popup §55, server-validated)
+- [x] Phase 4 — Combat (4 enemies + Warden enrage, damage numbers, particles)
+- [x] Phase 5 — Academy (3 lessons, Edge validate, mastery, certificates)
+- [x] Phase 6 — CodeLab (projects/files/run/preview/versions, 2 templates)
+- [x] Phase 7 — RPG (Vault, inventory, loadout, 4 achievements)
+- [x] Phase 8 — Economy (Shop, Wallet, Credits, ledger)
+- [x] Phase 9 — Gacha/Event (Capsule pity 10, duplicate, double-XP)
+- [x] Phase 10 — AI (Mentor stub proxy, hint ladder)
+- [x] Phase 11 — Offline/Online (OfflineBanner, queue, fail-open)
+- [x] Phase 12 — Audio/Polish (AudioSystem 14 SFX + BGM, mascot loading)
+- [x] Phase 13 — QA/Security (Vitest 9/9 + Playwright 12/12, rate-limit 20/min)
+- [x] Phase 14 — Production (robika2.vercel.app, 20 env, Supabase ACTIVE)
 
-Payments and gacha ship behind feature flags (`lib/config/flags.ts`) until verified.
+Live: **https://robika2.vercel.app** · Docs: `docs/part3/` · Runbook: `docs/PRODUCTION.md`
