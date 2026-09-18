@@ -10,6 +10,55 @@ import {
   type VersionRow,
 } from "@/lib/codelab/data";
 
+function MonacoEditor({
+  value,
+  path,
+  onChange,
+}: {
+  value: string;
+  path?: string;
+  onChange: (v: string) => void;
+}) {
+  const [Editor, setEditor] = useState<React.ComponentType<{
+    height: string;
+    language: string;
+    theme: string;
+    value: string;
+    onChange: (v: string | undefined) => void;
+    options: Record<string, unknown>;
+  }> | null>(null);
+  useEffect(() => {
+    void import("@monaco-editor/react").then((m) => setEditor(() => m.default as never));
+  }, []);
+  const lang = path?.endsWith(".html")
+    ? "html"
+    : path?.endsWith(".css")
+      ? "css"
+      : path?.endsWith(".json")
+        ? "json"
+        : "javascript";
+  if (!Editor)
+    return (
+      <textarea
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        spellCheck={false}
+        rows={16}
+        className="w-full resize-none bg-black/70 p-3 text-xs leading-relaxed text-emerald-200 outline-none"
+      />
+    );
+  return (
+    <Editor
+      height="400px"
+      language={lang}
+      theme="vs-dark"
+      value={value}
+      onChange={(v) => onChange(v ?? "")}
+      options={{ fontSize: 13, minimap: { enabled: false }, scrollBeyondLastLine: false, tabSize: 2, padding: { top: 8 } }}
+    />
+  );
+}
+
 type Params = { projectId: string };
 
 export default function WorkspacePage({ params }: { params: Promise<Params> }) {
@@ -184,7 +233,7 @@ export default function WorkspacePage({ params }: { params: Promise<Params> }) {
           <span className={dirty ? "text-amber-400" : "text-emerald-700"}>{dirty ? "● belum disimpan" : savedAt ? `tersimpan ${savedAt}` : ""}</span>
         </div>
 
-        {/* tabs file */}
+        {/* tabs file + add */}
         <div className="mt-3 flex flex-wrap gap-1">
           {files.map((f, i) => (
             <button
@@ -197,16 +246,28 @@ export default function WorkspacePage({ params }: { params: Promise<Params> }) {
               {f.path}
             </button>
           ))}
+          <button
+            onClick={() => {
+              const name = window.prompt("Nama file (contoh: utils.js):");
+              if (!name || files.some((f) => f.path === name)) return;
+              setFiles((fs) => [...fs, { path: name, content: "" }]);
+              setActive(files.length);
+              setDirty(true);
+            }}
+            className="rounded bg-black/30 px-2 py-1 text-[11px] text-emerald-600 ring-1 ring-emerald-800 hover:text-emerald-300"
+          >
+            + File
+          </button>
         </div>
 
-        {/* editor */}
-        <textarea
-          value={activeFile?.content ?? ""}
-          onChange={(e) => updateActive(e.target.value)}
-          spellCheck={false}
-          rows={16}
-          className="mt-2 w-full resize-none rounded border border-emerald-900 bg-black/70 p-3 text-xs leading-relaxed text-emerald-200 outline-none focus:ring-1 focus:ring-emerald-600"
-        />
+        {/* editor — Monaco with textarea fallback */}
+        <div className="mt-2 overflow-hidden rounded border border-emerald-900">
+          <MonacoEditor
+            value={activeFile?.content ?? ""}
+            path={activeFile?.path}
+            onChange={(v) => updateActive(v ?? "")}
+          />
+        </div>
 
         {/* run bar */}
         <div className="mt-2 flex gap-2">
