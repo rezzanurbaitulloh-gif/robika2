@@ -12,27 +12,10 @@
 # Error details
 
 ```
-Error: expect(locator).toContainText(expected) failed
-
-Locator: locator('pre')
-Expected substring: "HALO_CODELAB_42"
-Received string:    "Output muncul di sini…"
-
+Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3101/account/login
 Call log:
-  - Expect "toContainText" with timeout 30000ms
-  - waiting for locator('pre')
-    38 × locator resolved to <pre class="mt-2 max-h-48 overflow-auto rounded bg-black/70 p-3 text-[11px] text-emerald-400">Output muncul di sini…</pre>
-       - unexpected value "Output muncul di sini…"
-  - Target page, context or browser has been closed
+  - navigating to "http://localhost:3101/account/login", waiting until "networkidle"
 
-```
-
-```yaml
-- text: Output muncul di sini…
-```
-
-```
-Error: write EPIPE
 ```
 
 # Test source
@@ -43,7 +26,8 @@ Error: write EPIPE
   3  | const BASE = process.env.E2E_URL ?? "http://localhost:3100";
   4  | 
   5  | async function robustLogin(page: import("@playwright/test").Page, base: string) {
-  6  |   await page.goto(base + "/account/login", { waitUntil: "networkidle", timeout: 90000 });
+> 6  |   await page.goto(base + "/account/login", { waitUntil: "networkidle", timeout: 90000 });
+     |              ^ Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3101/account/login
   7  |   await page
   8  |     .waitForFunction(
   9  |       () => {
@@ -91,8 +75,7 @@ Error: write EPIPE
   51 | 
   52 |     await page.fill("textarea", 'console.log("HALO_CODELAB_42");');
   53 |     await page.click("text=RUN");
-> 54 |     await expect(page.locator("pre")).toContainText("HALO_CODELAB_42", { timeout: 30000 });
-     |     ^ Error: write EPIPE
+  54 |     await expect(page.locator("pre")).toContainText("HALO_CODELAB_42", { timeout: 30000 });
   55 | 
   56 |     await page.click("text=Simpan Versi");
   57 |     await page.waitForTimeout(2000);
