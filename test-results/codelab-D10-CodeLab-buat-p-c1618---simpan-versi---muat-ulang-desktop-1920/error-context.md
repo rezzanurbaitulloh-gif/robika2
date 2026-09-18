@@ -12,22 +12,23 @@
 # Error details
 
 ```
-Test timeout of 180000ms exceeded.
-```
+Error: expect(locator).toContainText(expected) failed
+
+Locator: locator('pre')
+Expected substring: "HALO_CODELAB_42"
+Received string:    "Output muncul di sini…"
+Timeout: 30000ms
+
+Call log:
+  - Expect "toContainText" with timeout 30000ms
+  - waiting for locator('pre')
+    63 × locator resolved to <pre class="mt-2 max-h-48 overflow-auto rounded bg-black/70 p-3 text-[11px] text-emerald-400">Output muncul di sini…</pre>
+       - unexpected value "Output muncul di sini…"
 
 ```
-Error: page.waitForTimeout: Target page, context or browser has been closed
-```
-
-# Page snapshot
 
 ```yaml
-- generic [ref=f2e3]:
-  - heading "This page couldn’t load" [level=1] [ref=f2e6]
-  - paragraph [ref=f2e7]: Reload to try again, or go back.
-  - generic [ref=f2e8]:
-    - button "Reload" [ref=f2e10] [cursor=pointer]
-    - button "Back" [ref=f2e11] [cursor=pointer]
+- text: Output muncul di sini…
 ```
 
 # Test source
@@ -82,12 +83,12 @@ Error: page.waitForTimeout: Target page, context or browser has been closed
   47 |         { timeout: 60000 }
   48 |       )
   49 |       .catch(() => {});
-> 50 |     await page.waitForTimeout(1500);
-     |                ^ Error: page.waitForTimeout: Target page, context or browser has been closed
+  50 |     await page.waitForTimeout(1500);
   51 | 
   52 |     await page.fill("textarea", 'console.log("HALO_CODELAB_42");');
   53 |     await page.click("text=RUN");
-  54 |     await expect(page.locator("pre")).toContainText("HALO_CODELAB_42", { timeout: 30000 });
+> 54 |     await expect(page.locator("pre")).toContainText("HALO_CODELAB_42", { timeout: 30000 });
+     |                                       ^ Error: expect(locator).toContainText(expected) failed
   55 | 
   56 |     await page.click("text=Simpan Versi");
   57 |     await page.waitForTimeout(2000);

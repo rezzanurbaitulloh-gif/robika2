@@ -232,7 +232,7 @@ export class HubScene extends Phaser.Scene {
 
     // Bridge railings (visual only, reinforces bridge identity)
     if (world.id === "boot_valley") {
-      for (let by of [7.5, 9.5]) {
+      for (const by of [7.5, 9.5]) {
         for (let bx = 12; bx <= 15; bx++) {
           const rpx = bx * TS + TS/2;
           const rpy = by * TS + TS/2;
@@ -245,11 +245,11 @@ export class HubScene extends Phaser.Scene {
 
     // Barrel props near hut (density)
     if (world.id === "boot_valley" && this.textures.exists("prop_rock")) {
-      const barrels = [[6, 11, 0.9], [7, 11, 1.1]];
+      const barrels = [[6, 11, 0.9], [7, 11, 1.1]] as const;
       for (const [bx, by, sc] of barrels) {
         const bpx = bx * TS + TS / 2;
         const bpy = by * TS + TS / 2;
-        const barrel = this.add.rectangle(bpx, bpy + 4, 14, 10, 0x6b4a35);
+        const barrel = this.add.rectangle(bpx, bpy + 4, 14, 10 * sc, 0x6b4a35);
         barrel.setDepth(bpy + 10);
         const hoop = this.add.rectangle(bpx, bpy + 1, 14, 2, 0x3a2a1a);
         hoop.setDepth(bpy + 11);

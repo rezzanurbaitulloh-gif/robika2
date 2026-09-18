@@ -12,31 +12,27 @@
 # Error details
 
 ```
-Test timeout of 180000ms exceeded.
-```
+Error: expect(locator).toContainText(expected) failed
+
+Locator: locator('pre')
+Expected substring: "HALO_CODELAB_42"
+Received string:    "Output muncul di sini…"
+
+Call log:
+  - Expect "toContainText" with timeout 30000ms
+  - waiting for locator('pre')
+    38 × locator resolved to <pre class="mt-2 max-h-48 overflow-auto rounded bg-black/70 p-3 text-[11px] text-emerald-400">Output muncul di sini…</pre>
+       - unexpected value "Output muncul di sini…"
+  - Target page, context or browser has been closed
 
 ```
-Error: page.waitForTimeout: Target page, context or browser has been closed
-```
-
-# Page snapshot
 
 ```yaml
-- main [ref=f2e2]:
-  - generic [ref=f2e3]:
-    - generic [ref=f2e4]:
-      - link "« CodeLab" [ref=f2e5] [cursor=pointer]:
-        - /url: /codelab
-      - generic [ref=f2e6]:
-        - button "Simpan (Ctrl+S)" [ref=f2e7]
-        - button "Simpan Versi" [ref=f2e8]
-        - button "Riwayat" [ref=f2e9]
-    - heading "…" [level=1] [ref=f2e10]
-    - textbox [ref=f2e11]
-    - generic [ref=f2e12]:
-      - button "▶ RUN" [ref=f2e13]
-      - button "Preview" [ref=f2e14]
-    - generic [ref=f2e15]: Output muncul di sini…
+- text: Output muncul di sini…
+```
+
+```
+Error: write EPIPE
 ```
 
 # Test source
@@ -91,12 +87,12 @@ Error: page.waitForTimeout: Target page, context or browser has been closed
   47 |         { timeout: 60000 }
   48 |       )
   49 |       .catch(() => {});
-> 50 |     await page.waitForTimeout(1500);
-     |                ^ Error: page.waitForTimeout: Target page, context or browser has been closed
+  50 |     await page.waitForTimeout(1500);
   51 | 
   52 |     await page.fill("textarea", 'console.log("HALO_CODELAB_42");');
   53 |     await page.click("text=RUN");
-  54 |     await expect(page.locator("pre")).toContainText("HALO_CODELAB_42", { timeout: 30000 });
+> 54 |     await expect(page.locator("pre")).toContainText("HALO_CODELAB_42", { timeout: 30000 });
+     |     ^ Error: write EPIPE
   55 | 
   56 |     await page.click("text=Simpan Versi");
   57 |     await page.waitForTimeout(2000);
