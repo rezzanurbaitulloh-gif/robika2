@@ -14,6 +14,7 @@ import { touch } from "@/lib/game/touchInput";
 import { keyboardState } from "@/lib/game/keyboardInput";
 import { t } from "@/lib/i18n";
 import { createClient } from "@/lib/supabase/client";
+import { audio } from "@/game/audio/AudioSystem";
 import type { ChallengeDef } from "@/lib/coding/ChallengeRunner";
 import chGatePower from "@/content/challenges/ch_gate_power.json";
 
